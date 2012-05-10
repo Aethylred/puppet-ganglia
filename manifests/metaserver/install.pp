@@ -24,10 +24,19 @@ class ganglia::metaserver::install{
     cwd     => $ganglia::parameters::core_dir,
     user    => root,
     command => "${ganglia::parameters::core_dir}/configure --with-gmetad",
+    creates => "${ganglia::parameters::core_dir}/config.status",
     require => [
       File[$ganglia::parameters::core_dir],
       Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat-dev','libpcre3-dev','librrd-dev','rrdtool']
     ],
+  }
+
+  exec{'make_core':
+    cwd     => $ganglia::parameters::core_dir,
+    user    => root,
+    path    => ['/usr/bin'],
+    command => 'make',
+    require => Exec['configure_core'],
   }
 
 }
