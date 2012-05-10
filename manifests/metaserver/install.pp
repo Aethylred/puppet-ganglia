@@ -7,4 +7,5 @@ class ganglia::metaserver::install{
   include ganglia::parameters
   # Installing the latest stable from the Ganglia web site, so no packages please 
   package{$ganglia::parameters::metaserver_package: ensure => purged}
+  include ganglia::core::download
 }
