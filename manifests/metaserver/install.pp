@@ -13,12 +13,21 @@ class ganglia::metaserver::install{
   # Dependencies
   package{'build-essential': ensure => installed}
   package{'rrdtool': ensure => installed}
+  package{'libapr1-dev': ensure => installed}
+  package{'pkg-config': ensure => installed}
+  package{'libconfuse-dev': ensure => installed}
+  package{'libexpat-dev': ensure => installed}
+  package{'libpcre3-dev': ensure => installed}
+  package{'librrd-dev': ensure => installed}
 
   exec{'configure_core':
     cwd     => $ganglia::parameters::core_dir,
     user    => root,
-    command => "${ganglia::parameters::core_dir}/configure",
-    require => File[$ganglia::parameters::core_dir],
+    command => "${ganglia::parameters::core_dir}/configure --with-gmetad",
+    require => [
+      File[$ganglia::parameters::core_dir],
+      Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat-dev','libpcre3-dev','librrd-dev','rrdtool']
+    ],
   }
 
 }
