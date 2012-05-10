@@ -16,7 +16,7 @@ class ganglia::metaserver::install{
   package{'libapr1-dev': ensure => installed}
   package{'pkg-config': ensure => installed}
   package{'libconfuse-dev': ensure => installed}
-  package{'libexpat-dev': ensure => installed}
+  package{'libexpat1-dev': ensure => installed}
   package{'libpcre3-dev': ensure => installed}
   package{'librrd-dev': ensure => installed}
 
@@ -27,16 +27,17 @@ class ganglia::metaserver::install{
     creates => "${ganglia::parameters::core_dir}/config.status",
     require => [
       File[$ganglia::parameters::core_dir],
-      Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat-dev','libpcre3-dev','librrd-dev','rrdtool']
+      Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']
     ],
   }
 
   exec{'make_core':
-    cwd     => $ganglia::parameters::core_dir,
-    user    => root,
-    path    => ['/usr/bin'],
-    command => 'make',
-    require => Exec['configure_core'],
+    cwd       => $ganglia::parameters::core_dir,
+    user      => root,
+    provider  => shell,
+    command   => 'make',
+    require   => Exec['configure_core'],
+    creates   => "${ganglia::parameters::core_dir}/gmetad/gmetad",
   }
 
 }
