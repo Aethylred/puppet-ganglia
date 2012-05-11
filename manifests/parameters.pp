@@ -5,6 +5,7 @@ class ganglia::parameters{
     Ubuntu: {
       $webfrontend_package    = 'ganglia-webfrontend'
       $metaserver_package     = 'gmetad'
+      $metaserver_bin         = '/usr/local/sbin/gmetad'
     }
   }
 
