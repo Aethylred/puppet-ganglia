@@ -8,7 +8,7 @@ class ganglia::parameters{
       $metaserver_bin         = '/usr/local/sbin/gmetad'
       $metaserver_service     = 'gmetad'
       $metaserver_init        = "/etc/init.d/${metaserver_service}"
-      $config_dir             = '/etc/ganglia'
+      $config_dir             = '/usr/local/etc'
       $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
       $rrd_parentdir          = '/var/lib/ganglia'
       $rrd_rootdir            = '/var/lib/ganglia/rrds'
