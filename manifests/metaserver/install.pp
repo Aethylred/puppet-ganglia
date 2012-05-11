@@ -73,12 +73,29 @@ class ganglia::metaserver::install(
     require => Exec['install_core'],
   }
 
+  file{$ganglia::parameters::rrd_parentdir:
+    ensure  => directory,
+    owner   => root,
+    group   => root,
+    require => Exec['install_core'],
+  }
+
+  user{'nobody': ensure => present}
+
+  file{$ganglia::parameters::rrd_rootdir:
+    ensure  => directory,
+    owner   => nobody,
+    group   => root,
+    require => [Exec['install_core'],File[$ganglia::parameters::rrd_parentdir]],
+  }
+
   file{$ganglia::parameters::metaserver_conf:
     ensure  => file,
     owner   => root,
     group   => root,
     path    => $ganglia::parameters::metaserver_conf,
     content => template("ganglia${ganglia::parameters::metaserver_conf}.erb"),
+    require => File[$ganglia::parameters::config_dir,$ganglia::parameters::rrd_parentdir,$ganglia::parameters::rrd_rootdir]
   }
 
 }
