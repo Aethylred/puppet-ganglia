@@ -6,6 +6,10 @@ class ganglia::parameters{
       $webfrontend_package    = 'ganglia-webfrontend'
       $metaserver_package     = 'gmetad'
       $metaserver_bin         = '/usr/local/sbin/gmetad'
+      $metaserver_service     = 'gmetad'
+      $metaserver_init        = "/etc/init.d/${metaserver_service}"
+      $config_dir             = '/etc/ganglia'
+      $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
     }
   }
 
