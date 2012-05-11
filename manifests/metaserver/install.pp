@@ -40,4 +40,12 @@ class ganglia::metaserver::install{
     creates   => "${ganglia::parameters::core_dir}/gmetad/gmetad",
   }
 
+    exec{'install_core':
+    cwd       => $ganglia::parameters::core_dir,
+    user      => root,
+    provider  => shell,
+    command   => 'make install',
+    require   => Exec['configure_core'],
+  }
+
 }
