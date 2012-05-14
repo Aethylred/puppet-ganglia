@@ -29,30 +29,30 @@ class ganglia::core::install(
   user{'nobody': ensure => present}
 
   exec{'configure_core':
-    cwd     => $ganglia::parameters::core_dir,
+    cwd     => $ganglia::parameters::src_dir,
     user    => root,
     command => $with_gametad ? {
-      true      => "${ganglia::parameters::core_dir}/configure --with-gmetad",
-      default   => "${ganglia::parameters::core_dir}/configure",
+      true      => "${ganglia::parameters::src_dir}/configure --with-gmetad ${ganglia::parameters::configure_opts}",
+      default   => "${ganglia::parameters::src_dir}/configure ${ganglia::parameters::configure_opts}",
     },
-    creates => "${ganglia::parameters::core_dir}/config.status",
+    creates => "${ganglia::parameters::src_dir}/config.status",
     require => $with_gametad ? {
-      true      => [File[$ganglia::parameters::core_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
-      default   => [File[$ganglia::parameters::core_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
+      true      => [File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
+      default   => [File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
     }
   }
 
   exec{'make_core':
-    cwd       => $ganglia::parameters::core_dir,
+    cwd       => $ganglia::parameters::src_dir,
     user      => root,
     provider  => shell,
     command   => 'make',
     require   => Exec['configure_core'],
-    creates   => "${ganglia::parameters::core_dir}/gmond/gmond",
+    creates   => "${ganglia::parameters::src_dir}/gmond/gmond",
   }
 
   exec{'install_core':
-    cwd       => $ganglia::parameters::core_dir,
+    cwd       => $ganglia::parameters::src_dir,
     user      => root,
     provider  => shell,
     command   => 'make install',
@@ -67,11 +67,7 @@ class ganglia::core::install(
       owner   => root,
       group   => root,
       mode    => '0755',
-      source  => [
-        "puppet:///modules/ganglia/${fqdn}/${ganglia::parameters::metaserver_init}",
-        "puppet:///modules/ganglia/${operatingsystem}/${ganglia::parameters::metaserver_init}",
-        "puppet:///modules/ganglia/${ganglia::parameters::metaserver_init}",
-      ],
+      source  => template("ganglia${ganglia::parameters::metaserver_init}.erb"),
       require => Exec['install_core'],
     }
     file{$ganglia::parameters::rrd_parentdir:

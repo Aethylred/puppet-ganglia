@@ -9,7 +9,7 @@ class ganglia::core::download{
   }
 
   exec{'get_core':
-    cwd     => $ganglia::parameters::install_root,
+    cwd     => $ganglia::parameters::src_root,
     path    => ['/usr/bin','/bin'],
     user    => root,
     command => "wget -O - ${ganglia::parameters::core_source_url}|tar xzv",

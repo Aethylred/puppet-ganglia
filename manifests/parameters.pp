@@ -5,18 +5,23 @@ class ganglia::parameters{
     Ubuntu: {
       $webfrontend_package    = 'ganglia-webfrontend'
       $metaserver_package     = 'gmetad'
-      $metaserver_bin         = '/usr/local/sbin/gmetad'
       $metaserver_service     = 'gmetad'
       $metaserver_init        = "/etc/init.d/${metaserver_service}"
-      $config_dir             = '/usr/local/etc'
+      $config_dir             = '/etc/ganglia'
       $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
       $rrd_parentdir          = '/var/lib/ganglia'
       $rrd_rootdir            = '/var/lib/ganglia/rrds'
+      $prefix                 = '/usr'
+      $metaserver_bin         = "${prefix}/sbin/gmetad"
     }
   }
 
 # Installation parameters
-  $install_root       = '/opt'
+  $src_root       = '/src'
+
+# configure options
+  $configure_opts     = "--prefix=${prefix} --sysconfdir=${config_dir}"
+
 
 # Set software versions
   $web_version        = '3.4.2'
@@ -26,6 +31,6 @@ class ganglia::parameters{
 # Set software source URLs and files  
   $core_source_url    = "http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/${core_version}/ganglia-${core_version}.tar.gz"
   $core_source_file   = "ganglia-${core_version}.tar.gz"
-  $core_dir           = "${install_root}/ganglia"
-  $core_source_dir    = "${core_dir}-${core_version}"
+  $src_dir           = "${src_root}/ganglia"
+  $src_version_dir    = "${core_dir}-${core_version}"
 }
