@@ -67,8 +67,9 @@ class ganglia::core::install(
       owner   => root,
       group   => root,
       mode    => '0755',
-      source  => template("ganglia${ganglia::parameters::metaserver_init}.erb"),
+      content => template("ganglia${ganglia::parameters::metaserver_init}.erb"),
       require => Exec['install_core'],
+      notify  => Service[$ganglia::parameters::metaserver_service],
     }
     file{$ganglia::parameters::rrd_parentdir:
       ensure  => directory,

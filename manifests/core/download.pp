@@ -4,7 +4,7 @@ class ganglia::core::download{
 
   include ganglia::parameters
 
-  file{$ganglia::parameters::install_root:
+  file{$ganglia::parameters::src_root:
     ensure => directory,
   }
 
@@ -13,11 +13,11 @@ class ganglia::core::download{
     path    => ['/usr/bin','/bin'],
     user    => root,
     command => "wget -O - ${ganglia::parameters::core_source_url}|tar xzv",
-    creates => $ganglia::parameters::core_source_dir,
-    require => File[$ganglia::parameters::install_root],
+    creates => $ganglia::parameters::src_version_dir,
+    require => File[$ganglia::parameters::src_root],
   }
 
-  file{$ganglia::parameters::core_source_dir:
+  file{$ganglia::parameters::src_version_dir:
     ensure  => directory,
     recurse => true,
     owner   => root,
@@ -25,10 +25,10 @@ class ganglia::core::download{
     require => Exec['get_core'],
   }
 
-  file{$ganglia::parameters::core_dir:
+  file{$ganglia::parameters::src_dir:
     ensure  => link,
-    path    => $ganglia::parameters::core_dir,
-    target  => $ganglia::parameters::core_source_dir,
-    require => File[$ganglia::parameters::core_source_dir]
+    path    => $ganglia::parameters::src_dir,
+    target  => $ganglia::parameters::src_version_dir,
+    require => File[$ganglia::parameters::src_version_dir]
   }
 }

@@ -12,7 +12,7 @@ class ganglia::parameters{
       $rrd_parentdir          = '/var/lib/ganglia'
       $rrd_rootdir            = '/var/lib/ganglia/rrds'
       $prefix                 = '/usr'
-      $metaserver_bin         = "${prefix}/sbin/gmetad"
+      $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
     }
   }
 
@@ -29,8 +29,8 @@ class ganglia::parameters{
   $pyclient_version   = '3.3.0'
 
 # Set software source URLs and files  
-  $core_source_url    = "http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/${core_version}/ganglia-${core_version}.tar.gz"
   $core_source_file   = "ganglia-${core_version}.tar.gz"
-  $src_dir           = "${src_root}/ganglia"
-  $src_version_dir    = "${core_dir}-${core_version}"
+  $core_source_url    = "http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/${core_version}/${core_source_file}"
+  $src_dir            = "${src_root}/ganglia"
+  $src_version_dir    = "${src_dir}-${core_version}"
 }
