@@ -2,14 +2,19 @@
 
 class ganglia::metaserver(
   $cluster_name = 'mycluster',
-  $data_sources = ['localhost']
+  $cluster_url  = 'http://cluster.example.org',
+  $data_sources = ['localhost'],
+  $latlong      = '0,0',
+  $owner        = 'Nobody'
 ){
   case $operatingsystem {
     Ubuntu:{
       class{'ganglia::core::install':
-        cluster_name => $cluster_name,
-        data_sources => $data_sources,
-        with_gametad => true,
+        cluster_name  => $cluster_name,
+        data_sources  => $data_sources,
+        latlong       => $latlong,
+        owner         => $owner,
+        with_gametad  => true,
       }
     }
     default:{warning{"Ganglia not configured for $operatingsystem":}}

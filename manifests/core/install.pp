@@ -4,17 +4,25 @@
 
 class ganglia::core::install(
   $cluster_name = 'mycluster',
+  $cluster_url  = 'http://cluster.example.org',
   $data_sources = ['localhost'],
+  $latlong      = 'N0 W0',
+  $owner        = 'Nobody',
   $with_gametad = false
 ){
 
   include ganglia::parameters
   include ganglia::core::download
 
-  # Installing the latest stable from the Ganglia web site, so no packages please 
+  # This manifest installs from the Ganglia web site, so no packages please 
   package{$ganglia::parameters::metaserver_package: ensure => purged}
+  package{$ganglia::parameters::monitor_package: ensure => purged}
 
   # Dependencies
+  # NOTE: This will currently fail when _not_ installing gmetad
+  # this is intentional so I can minimse the packages installed
+  # on monitored servers
+  # NOTE: if we were using packages, fewer packages would be required
   if $with_gametad {
     package{'build-essential': ensure => installed}
     package{'rrdtool': ensure => installed}
@@ -115,6 +123,16 @@ class ganglia::core::install(
     owner   => root,
     group   => root,
     require => Exec['install_core'],
+  }
+
+  file{$ganglia::parameters::monitor_conf:
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    path    => $ganglia::parameters::monitor_conf,
+    content => template("ganglia${ganglia::parameters::monitor_conf}.erb"),
+    require => File[$ganglia::parameters::config_dir],
+    # notify  => Service[$ganglia::parameters::monitor_service],
   }
 
 
