@@ -3,7 +3,7 @@
 class ganglia::parameters{
   case $operatingsystem{
     Ubuntu: {
-      $webfrontend_package    = 'ganglia-webfrontend'
+      $web_package            = 'ganglia-webfrontend'
       $metaserver_package     = 'gmetad'
       $monitor_package        = 'ganglia-monitor'
       $metaserver_service     = 'gmetad'
@@ -38,4 +38,7 @@ class ganglia::parameters{
   $core_source_url    = "http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/${core_version}/${core_source_file}"
   $src_dir            = "${src_root}/ganglia"
   $src_version_dir    = "${src_dir}-${core_version}"
+
+  ###DEFINE WEB VARIABLES!
+
 }

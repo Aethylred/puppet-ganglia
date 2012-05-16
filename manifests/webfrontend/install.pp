@@ -2,7 +2,7 @@
 #
 # Do NOT use directly: use ganglia::webfrontend
 
-class ganglia::webfrontend::install {
+class ganglia::web::install {
 
   include web::apache
   include web::apache::mod_php
@@ -12,8 +12,10 @@ class ganglia::webfrontend::install {
   # include ganglia::metaserver
 
 # We are going to install the 'latest stable' from the ganglia site
-  package{$ganglia::parameters::webfrontend_package:
+  package{$ganglia::parameters::web_package:
     ensure => purged,
   }
+
+  include ganglia::web::download
 
 }
