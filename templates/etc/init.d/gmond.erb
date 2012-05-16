@@ -7,8 +7,8 @@
 # Default-Stop:      0 1 6
 ### END INIT INFO 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/sbin/gmond
-NAME=gmond
+DAEMON=<%= scope.lookupvar('ganglia::parameters::monitor_bin')%>
+NAME=<%= scope.lookupvar('ganglia::parameters::monitor_service')%>
 DESC="Ganglia Monitor Daemon"
 
 test -x $DAEMON || exit 0

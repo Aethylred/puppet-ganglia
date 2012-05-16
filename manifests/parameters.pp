@@ -17,7 +17,7 @@ class ganglia::parameters{
       $rrd_rootdir            = '/var/lib/ganglia/rrds'
       $prefix                 = '/usr'
       $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
-      $monitor_bin_path       = "${prefix}/sbin/${monitor_service}"
+      $monitor_bin            = "${prefix}/sbin/${monitor_service}"
     }
   }
 

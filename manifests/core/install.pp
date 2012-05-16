@@ -134,7 +134,16 @@ class ganglia::core::install(
     require => File[$ganglia::parameters::config_dir],
     # notify  => Service[$ganglia::parameters::monitor_service],
   }
-
+  file{'monitor_init':
+    ensure  => file,
+    path    => $ganglia::parameters::monitor_init,
+    owner   => root,
+    group   => root,
+    mode    => '0755',
+    content => template("ganglia${ganglia::parameters::monitor_init}.erb"),
+    require => Exec['install_core'],
+    # notify  => Service[$ganglia::parameters::monitor_service],
+  }
 
 
 }
