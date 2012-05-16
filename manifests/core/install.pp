@@ -145,5 +145,12 @@ class ganglia::core::install(
     # notify  => Service[$ganglia::parameters::monitor_service],
   }
 
+  service{$ganglia::parameters::monitor_service:
+    ensure      => running,
+    enable      => true,
+    hasrestart  => true,
+    hasstatus   => false,
+  }
+
 
 }
