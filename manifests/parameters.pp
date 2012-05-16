@@ -7,7 +7,8 @@ class ganglia::parameters{
       $metaserver_package     = 'gmetad'
       $monitor_package        = 'ganglia-monitor'
       $metaserver_service     = 'gmetad'
-      $monitor_service        = 'gmond'
+      $monitor_service        = 'ganglia-monitor'
+      $monitor_bin            = 'gmond'
       $metaserver_init        = "/etc/init.d/${metaserver_service}"
       $monitor_init           = "/etc/init.d/${monitor_service}"
       $config_dir             = '/etc/ganglia'
@@ -17,6 +18,7 @@ class ganglia::parameters{
       $rrd_rootdir            = '/var/lib/ganglia/rrds'
       $prefix                 = '/usr'
       $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
+      $monitor_bin_path       = "${prefix}/sbin/${monitor_bin}"
     }
   }
 

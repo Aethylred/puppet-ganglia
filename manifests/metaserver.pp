@@ -11,6 +11,7 @@ class ganglia::metaserver(
     Ubuntu:{
       class{'ganglia::core::install':
         cluster_name  => $cluster_name,
+        cluster_url   => $cluster_url,
         data_sources  => $data_sources,
         latlong       => $latlong,
         owner         => $owner,
