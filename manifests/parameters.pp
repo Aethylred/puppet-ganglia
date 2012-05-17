@@ -18,6 +18,8 @@ class ganglia::parameters{
       $prefix                 = '/usr'
       $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
       $monitor_bin            = "${prefix}/sbin/${monitor_service}"
+      $apache_user            = 'www-data'
+      $web_root               = '/var/www'
     }
   }
 
@@ -43,5 +45,6 @@ class ganglia::parameters{
   $web_source_url     = "http://downloads.sourceforge.net/project/ganglia/ganglia-web/${web_version}/${web_source_file}"
   $web_dir            = "${src_root}/ganglia-web"
   $web_version_dir    = "${web_dir}-${web_version}"
+  $web_site_dir       = "${web_root}/gangila-web"
 
 }
