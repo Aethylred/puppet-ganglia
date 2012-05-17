@@ -34,6 +34,7 @@ class ganglia::web::install {
     command   => 'make install',
     require   => File['web_makefile'],
     creates   => $ganglia::parameters::web_site_dir,
+    notify    => Service['apache'],
   }
 
 }
