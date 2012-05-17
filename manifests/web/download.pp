@@ -4,11 +4,7 @@ class ganglia::web::download{
 
   include ganglia::parameters
 
-  file{$ganglia::parameters::src_root:
-    ensure => directory,
-  }
-
-  exec{'get_core':
+  exec{'get_web':
     cwd     => $ganglia::parameters::src_root,
     path    => ['/usr/bin','/bin'],
     user    => root,
@@ -22,7 +18,7 @@ class ganglia::web::download{
     recurse => true,
     owner   => root,
     group   => root,
-    require => Exec['get_core'],
+    require => Exec['get_web'],
   }
 
   file{$ganglia::parameters::web_dir:
