@@ -39,6 +39,9 @@ class ganglia::parameters{
   $src_dir            = "${src_root}/ganglia"
   $src_version_dir    = "${src_dir}-${core_version}"
 
-  ###DEFINE WEB VARIABLES!
+  $web_source_file    = "ganglia-${web_version}.tar.gz"
+  $web_source_url     = "http://downloads.sourceforge.net/project/ganglia/ganglia-web/${web_version}/${web_source_file}"
+  $web_dir            = "${src_root}/ganglia-web"
+  $web_version_dir    = "${web_dir}-${web_version}"
 
 }
