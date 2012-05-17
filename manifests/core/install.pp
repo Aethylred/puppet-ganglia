@@ -21,10 +21,8 @@ class ganglia::core::install(
   package{$ganglia::parameters::monitor_package: ensure => purged}
 
   # Dependencies
-  # NOTE: This will currently fail when _not_ installing gmetad
-  # this is intentional so I can minimse the packages installed
-  # on monitored servers
-  # NOTE: if we were using packages, fewer packages would be required
+  # NOTE: if we were using packages to install ganglia,
+  # fewer packages would be required
   if $with_gametad {
     package{'build-essential': ensure => installed}
     package{'rrdtool': ensure => installed}
@@ -34,7 +32,11 @@ class ganglia::core::install(
     package{'libexpat1-dev': ensure => installed}
     package{'libpcre3-dev': ensure => installed}
     package{'librrd-dev': ensure => installed}
-  } 
+  } else {
+      # NOTE: This will currently fail when _not_ installing gmetad
+      # this is intentional so I can minimse the packages installed
+      # on monitored servers
+  }
 
   user{'nobody': ensure => present}
 
@@ -102,7 +104,7 @@ class ganglia::core::install(
       path    => $ganglia::parameters::metaserver_conf,
       content => template("ganglia${ganglia::parameters::metaserver_conf}.erb"),
       require => File[$ganglia::parameters::config_dir,$ganglia::parameters::rrd_parentdir,$ganglia::parameters::rrd_rootdir],
-      notify  => Service[$ganglia::parameters::metaserver_service],
+      notify  => Service[$ganglia::parameters::metaserver_service,'apache'],
     }
 
     service{$ganglia::parameters::metaserver_service:

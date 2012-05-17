@@ -1,9 +1,9 @@
 # NeSI Ganglia metaserver manifest
 
 class ganglia::metaserver(
-  $cluster_name   = 'mycluster',
+  $cluster_name   = 'MyCluster',
   $cluster_url    = 'http://cluster.example.org',
-  $data_sources   = ['localhost'],
+  $data_sources   = [{cluster_name => 'MyCluster', cluster_hosts => ['localhost']}],
   $latlong        = '0,0',
   $owner          = 'Nobody',
   $grid_name      = false,
@@ -22,6 +22,6 @@ class ganglia::metaserver(
         with_gametad    => true,
       }
     }
-    default:{warning{"Ganglia not configured for $operatingsystem":}}
+    default:{warning{"Ganglia metaserver not configured for $operatingsystem":}}
   }
 }

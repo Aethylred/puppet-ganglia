@@ -3,24 +3,22 @@
 class ganglia::monitor(
   $cluster_name = 'mycluster',
   $cluster_url  = 'http://cluster.example.org',
-  $data_sources = ['localhost'],
   $latlong      = '0,0',
-  $owner        = 'Nobody',
-  $grid_name    = false,
-  $grid_authority = false
+  $owner        = 'Nobody'
 ){
   case $operatingsystem {
     Ubuntu:{
       class{'ganglia::core::install':
         cluster_name    => $cluster_name,
         cluster_url     => $cluster_url,
-        data_sources    => $data_sources,
         latlong         => $latlong,
         owner           => $owner,
-        grid_name       => $grid_name,
-        grid_authority  => $grid_authority,
+        data_sources    => undef,
+        grid_name       => undef,
+        grid_authority  => undef,
+        with_gmetad     => false,
       }
     }
-    default:{warning{"Ganglia not configured for $operatingsystem":}}
+    default:{warning{"Ganglia monitor not configured for $operatingsystem":}}
   }
 }
