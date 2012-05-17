@@ -61,6 +61,9 @@ data_source "<%= cluster_name %>" <%= data_sources.join(' ') %>
 # tag with this name.
 # default: unspecified
 # gridname "MyGrid"
+<% if grid_name then -%>
+gridname <%= grid_name %>
+<% end -%>
 #
 #-------------------------------------------------------------------------------
 # The authority URL for this grid. Used by other gmetads to locate graphs
@@ -69,6 +72,9 @@ data_source "<%= cluster_name %>" <%= data_sources.join(' ') %>
 # default: "http://hostname/ganglia/",
 #   where hostname is the name of this machine, as defined by gethostname().
 # authority "http://mycluster.org/newprefix/"
+<% if grid_authority then -%>
+authority "<%= grid_authority %>"
+<% end -%>
 #
 #-------------------------------------------------------------------------------
 # List of machines this gmetad will share XML with. Localhost

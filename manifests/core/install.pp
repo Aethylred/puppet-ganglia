@@ -3,12 +3,14 @@
 # Do NOT use directly use ganglia::metaserver or ganglia::client
 
 class ganglia::core::install(
-  $cluster_name = 'mycluster',
-  $cluster_url  = 'http://cluster.example.org',
-  $data_sources = ['localhost'],
-  $latlong      = 'N0 W0',
-  $owner        = 'Nobody',
-  $with_gametad = false
+  $cluster_name   = 'mycluster',
+  $cluster_url    = "http://cluster.example.org",
+  $data_sources   = ['localhost'],
+  $latlong        = 'N0 W0',
+  $owner          = 'Nobody',
+  $grid_name      = false,
+  $grid_authority = false,
+  $with_gametad   = false
 ){
 
   include ganglia::parameters
@@ -132,9 +134,9 @@ class ganglia::core::install(
     path    => $ganglia::parameters::monitor_conf,
     content => template("ganglia${ganglia::parameters::monitor_conf}.erb"),
     require => File[$ganglia::parameters::config_dir],
-    # notify  => Service[$ganglia::parameters::monitor_service],
+    notify  => Service[$ganglia::parameters::monitor_service],
   }
-  file{'monitor_init':
+  file{$ganglia::parameters::monitor_init:
     ensure  => file,
     path    => $ganglia::parameters::monitor_init,
     owner   => root,
@@ -142,7 +144,7 @@ class ganglia::core::install(
     mode    => '0755',
     content => template("ganglia${ganglia::parameters::monitor_init}.erb"),
     require => Exec['install_core'],
-    # notify  => Service[$ganglia::parameters::monitor_service],
+    notify  => Service[$ganglia::parameters::monitor_service],
   }
 
   service{$ganglia::parameters::monitor_service:
@@ -150,6 +152,7 @@ class ganglia::core::install(
     enable      => true,
     hasrestart  => true,
     hasstatus   => false,
+    require     => File[$ganglia::parameters::monitor_init,$ganglia::parameters::monitor_conf],
   }
 
 
