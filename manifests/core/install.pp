@@ -138,6 +138,7 @@ class ganglia::core::install(
     require => File[$ganglia::parameters::config_dir],
     notify  => Service[$ganglia::parameters::monitor_service],
   }
+  
   file{$ganglia::parameters::monitor_init:
     ensure  => file,
     path    => $ganglia::parameters::monitor_init,
