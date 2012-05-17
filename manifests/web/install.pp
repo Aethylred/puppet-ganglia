@@ -37,4 +37,15 @@ class ganglia::web::install {
     notify    => Service['apache'],
   }
 
+  case $operatingsystem {
+    Ubuntu:{
+      exec{'disable_default_site':
+        user      => root,
+        path      => ['/usr/sbin','/usr/bin'],
+        command   => 'a2dissite default',
+        onlyif    => 'test -e /etc/apache2/site-enable/*default',
+      }
+    }
+  } 
+
 }
