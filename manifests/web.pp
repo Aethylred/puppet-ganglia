@@ -1,8 +1,14 @@
 # NeSI Ganglia manifest for installing the web front end
 
-class ganglia::web {
+class ganglia::web(
+    $site_admin = 'admin@example.org'
+  ){
   case $operatingsystem {
-    Ubuntu:{include ganglia::web::install}
+    Ubuntu:{
+      class{'ganglia::web::install':
+        site_admin => $site_admin,
+      }
+    }
     default:{warning{"Ganglia web interface is not configured for $operatingsystem":}}
   }
 }

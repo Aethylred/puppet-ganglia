@@ -1,0 +1,13 @@
+<VirtualHost *:80>
+  ServerName <%= fqdn %>
+  ServerAdmin <%= site_admin %>
+  DocumentRoot <%= scope.lookupvar('ganglia::parameters::web_site_dir') %>
+  <Directory <%= scope.lookupvar('ganglia::parameters::web_site_dir') %>>
+    Options None
+    Order allow,deny
+    allow from all
+  </Directory>
+  ErrorLog /var/log/apache2/ganglia_error.log
+  LogLevel warn
+  CustomLog /var/log/apache2/ganglia_access.log combined
+</VirtualHost>

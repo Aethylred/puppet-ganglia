@@ -2,7 +2,9 @@
 #
 # Do NOT use directly: use ganglia::webfrontend
 
-class ganglia::web::install {
+class ganglia::web::install(
+    $site_admin = 'admin@example.org'
+  ){
 
   include web::apache
   include web::apache::mod_php
@@ -43,7 +45,25 @@ class ganglia::web::install {
         user      => root,
         path      => ['/usr/sbin','/usr/bin'],
         command   => 'a2dissite default',
-        onlyif    => 'test -e /etc/apache2/site-enable/*default',
+        onlyif    => 'test -e /etc/apache2/sites-enabled/*default',
+        notify    => Service['apache'],
+      }
+      file{'ganglia2_site':
+        ensure    => file,
+        owner      => root,
+        group     => root,
+        path      => '/etc/apache2/sites-enabled/ganglia2',
+        content   => template("ganglia/ganglia2.erb"),
+        require   => Exec['install_web'],
+        notify    => Service['apache'],
+      }
+      exec{'enable_ganglia_site':
+        user      => root,
+        path      => ['/usr/sbin','/usr/bin'],
+        command   => 'a2ensite ganglia2',
+        creates   => '/etc/apache2/sites-enabled/ganglia2',
+        notify    => Service['apache'],
+        require   => [File['ganglia2_site'],Exec['disable_default_site']],
       }
     }
   } 
