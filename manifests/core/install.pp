@@ -10,7 +10,7 @@ class ganglia::core::install(
   $owner          = 'Nobody',
   $grid_name      = false,
   $grid_authority = false,
-  $with_gmetad   = false
+  $with_gmetad    = false
 ){
 
   include ganglia::parameters
@@ -26,14 +26,14 @@ class ganglia::core::install(
   if $with_gmetad {
     case $operatingsystem {
       Ubuntu: {
-        package{'build-essential': ensure => installed}
-        package{'rrdtool': ensure => installed}
-        package{'libapr1-dev': ensure => installed}
-        package{'pkg-config': ensure => installed}
-        package{'libconfuse-dev': ensure => installed}
-        package{'libexpat1-dev': ensure => installed}
-        package{'libpcre3-dev': ensure => installed}
-        package{'librrd-dev': ensure => installed}
+        package{'build-essential':  ensure => installed}
+        package{'rrdtool':          ensure => installed}
+        package{'libapr1-dev':      ensure => installed}
+        package{'pkg-config':       ensure => installed}
+        package{'libconfuse-dev':   ensure => installed}
+        package{'libexpat1-dev':    ensure => installed}
+        package{'libpcre3-dev':     ensure => installed}
+        package{'librrd-dev':       ensure => installed}
       }
       CentOS: {
         package{'yum-plugin-downloadonly': ensure => installed}
@@ -45,23 +45,22 @@ class ganglia::core::install(
           timeout   => 600,
           require   => Package['yum-plugin-downloadonly'],
         }
-        package{'apr-devel': ensure => installed}
+        package{'apr-devel':        ensure => installed}
         package{'libconfuse-devel': ensure => installed}
-        package{'expat-devel': ensure => installed}
-        package{'pcre-devel': ensure => installed}
+        package{'expat-devel':      ensure => installed}
+        package{'pcre-devel':       ensure => installed}
+        package{'rrdtool-dev':      ensure => installed}
+        package{'rrdtool':          ensure => installed}
       }
     }
   } else {
-      # NOTE: This will currently fail when _not_ installing gmetad
-      # this is intentional so I can minimse the packages installed
-      # on monitored servers
     case $operatingsystem {
       Ubuntu: {
-        package{'build-essential': ensure => installed}
-        package{'libapr1-dev': ensure => installed}
-        package{'libconfuse-dev': ensure => installed}
-        package{'libexpat1-dev': ensure => installed}
-        package{'libpcre3-dev': ensure => installed}
+        package{'build-essential':  ensure => installed}
+        package{'libapr1-dev':      ensure => installed}
+        package{'libconfuse-dev':   ensure => installed}
+        package{'libexpat1-dev':    ensure => installed}
+        package{'libpcre3-dev':     ensure => installed}
       }
       CentOS: {
         package{'yum-plugin-downloadonly': ensure => installed}
@@ -73,10 +72,10 @@ class ganglia::core::install(
           timeout   => 600,
           require   => Package['yum-plugin-downloadonly'],
         }
-        package{'apr-devel': ensure => installed}
+        package{'apr-devel':        ensure => installed}
         package{'libconfuse-devel': ensure => installed}
-        package{'expat-devel': ensure => installed}
-        package{'pcre-devel': ensure => installed}
+        package{'expat-devel':      ensure => installed}
+        package{'pcre-devel':       ensure => installed}
       }
     }
   }
@@ -94,7 +93,7 @@ class ganglia::core::install(
     require => $with_gmetad ? {
       true      => $operatingsystem ? {
         'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
-        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']],
+        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel','rrdtool-dev','rrdtool']],
       },
       default   => $operatingsystem ? {
         'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','libconfuse-dev','libexpat1-dev','libpcre3-dev']],
@@ -128,7 +127,7 @@ class ganglia::core::install(
       owner   => root,
       group   => root,
       mode    => '0755',
-      content => template("ganglia${ganglia::parameters::metaserver_init}.erb"),
+      content => template("ganglia${ganglia::parameters::metaserver_init}.${operatingsystem}.erb"),
       require => Exec['install_core'],
       notify  => Service[$ganglia::parameters::metaserver_service],
     }
@@ -206,6 +205,5 @@ class ganglia::core::install(
     hasstatus   => false,
     require     => File[$ganglia::parameters::monitor_init,$ganglia::parameters::monitor_conf],
   }
-
 
 }
