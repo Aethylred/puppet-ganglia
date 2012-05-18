@@ -19,7 +19,7 @@ class ganglia::metaserver(
         owner           => $owner,
         grid_name       => $grid_name,
         grid_authority  => $grid_authority,
-        with_gametad    => true,
+        with_gmetad    => true,
       }
     }
     default:{warning{"Ganglia metaserver not configured for $operatingsystem":}}

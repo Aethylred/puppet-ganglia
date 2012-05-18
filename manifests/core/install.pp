@@ -10,7 +10,7 @@ class ganglia::core::install(
   $owner          = 'Nobody',
   $grid_name      = false,
   $grid_authority = false,
-  $with_gametad   = false
+  $with_gmetad   = false
 ){
 
   include ganglia::parameters
@@ -35,14 +35,38 @@ class ganglia::core::install(
         package{'libpcre3-dev': ensure => installed}
         package{'librrd-dev': ensure => installed}
       }
+      CentOS: {
+        package{'yum-plugin-downloadonly': ensure => installed}
+        exec{'dev_tools':
+          user      => root,
+          path      => ['/usr/bin'],
+          command   => "yum -y groupinstall 'Development Tools'",
+          unless    => "yum -y groupinstall 'Development Tools' --downloadonly",
+          timeout   => 600,
+          require   => Package['yum-plugin-downloadonly'],
+        }
+
+      }
     }
   } else {
       # NOTE: This will currently fail when _not_ installing gmetad
       # this is intentional so I can minimse the packages installed
       # on monitored servers
     case $operatingsystem {
+      Ubuntu: {
+
+      }
       CentOS: {
-        
+        package{'yum-plugin-downloadonly': ensure => installed}
+        exec{'dev_tools':
+          user      => root,
+          path      => ['/usr/bin'],
+          command   => "yum -y groupinstall 'Development Tools'",
+          unless    => "yum -y groupinstall 'Development Tools' --downloadonly",
+          timeout   => 600,
+          require   => Package['yum-plugin-downloadonly'],
+        }
+
       }
     }
   }
