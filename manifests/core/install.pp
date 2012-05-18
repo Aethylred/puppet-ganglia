@@ -24,18 +24,27 @@ class ganglia::core::install(
   # NOTE: if we were using packages to install ganglia,
   # fewer packages would be required
   if $with_gametad {
-    package{'build-essential': ensure => installed}
-    package{'rrdtool': ensure => installed}
-    package{'libapr1-dev': ensure => installed}
-    package{'pkg-config': ensure => installed}
-    package{'libconfuse-dev': ensure => installed}
-    package{'libexpat1-dev': ensure => installed}
-    package{'libpcre3-dev': ensure => installed}
-    package{'librrd-dev': ensure => installed}
+    case $operatingsystem {
+      Ubuntu: {
+        package{'build-essential': ensure => installed}
+        package{'rrdtool': ensure => installed}
+        package{'libapr1-dev': ensure => installed}
+        package{'pkg-config': ensure => installed}
+        package{'libconfuse-dev': ensure => installed}
+        package{'libexpat1-dev': ensure => installed}
+        package{'libpcre3-dev': ensure => installed}
+        package{'librrd-dev': ensure => installed}
+      }
+    }
   } else {
       # NOTE: This will currently fail when _not_ installing gmetad
       # this is intentional so I can minimse the packages installed
       # on monitored servers
+    case $operatingsystem {
+      CentOS: {
+        
+      }
+    }
   }
 
   user{'nobody': ensure => present}

@@ -21,6 +21,25 @@ class ganglia::parameters{
       $apache_user            = 'www-data'
       $web_root               = '/var/www'
     }
+    CentOS: {
+      $web_package            = 'ganglia-web'
+      $metaserver_package     = 'ganglia-gmetad'
+      $monitor_package        = 'ganglia-gmond'
+      $metaserver_service     = 'gmetad'
+      $monitor_service        = 'gmond'
+      $metaserver_init        = "/etc/init.d/${metaserver_service}"
+      $monitor_init           = "/etc/init.d/${monitor_service}"
+      $config_dir             = '/etc/ganglia'
+      $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
+      $monitor_conf           = "${config_dir}/${monitor_service}.conf"
+      $rrd_parentdir          = '/var/lib/ganglia'
+      $rrd_rootdir            = '/var/lib/ganglia/rrds'
+      $prefix                 = '/usr'
+      $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
+      $monitor_bin            = "${prefix}/sbin/${monitor_service}"
+      $apache_user            = 'apache'
+      $web_root               = '/var/www/html'
+    }
   }
 
 # Installation parameters

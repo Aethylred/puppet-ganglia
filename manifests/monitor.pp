@@ -7,7 +7,7 @@ class ganglia::monitor(
   $owner        = 'Nobody'
 ){
   case $operatingsystem {
-    Ubuntu:{
+    Ubuntu,CentOS:{
       class{'ganglia::core::install':
         cluster_name    => $cluster_name,
         cluster_url     => $cluster_url,
