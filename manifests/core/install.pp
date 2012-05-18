@@ -94,11 +94,11 @@ class ganglia::core::install(
     require => $with_gmetad ? {
       true      => $operatingsystem ? {
         'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
-        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools']],
+        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']],
       },
       default   => $operatingsystem ? {
-        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential']],
-        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools']],
+        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','libconfuse-dev','libexpat1-dev','libpcre3-dev']],
+        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']],
       },
     }
   }
@@ -194,7 +194,7 @@ class ganglia::core::install(
     owner   => root,
     group   => root,
     mode    => '0755',
-    content => template("ganglia${ganglia::parameters::monitor_init}.erb"),
+    content => template("ganglia${ganglia::parameters::monitor_init}.${operatingsystem}.erb"),
     require => Exec['install_core'],
     notify  => Service[$ganglia::parameters::monitor_service],
   }
