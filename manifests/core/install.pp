@@ -57,6 +57,7 @@ class ganglia::core::install(
     case $operatingsystem {
       Ubuntu: {
         package{'build-essential':  ensure => installed}
+        package{'pkg-config':       ensure => installed}
         package{'libapr1-dev':      ensure => installed}
         package{'libconfuse-dev':   ensure => installed}
         package{'libexpat1-dev':    ensure => installed}
@@ -96,7 +97,7 @@ class ganglia::core::install(
         'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel','rrdtool-dev','rrdtool']],
       },
       default   => $operatingsystem ? {
-        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','libconfuse-dev','libexpat1-dev','libpcre3-dev']],
+        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev']],
         'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']],
       },
     }

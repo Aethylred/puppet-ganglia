@@ -6,8 +6,6 @@ class ganglia::web::install(
     $site_admin = 'admin@example.org'
   ){
 
-  include web::apache
-  include web::apache::mod_php
   include ganglia::parameters
 
   # Need to figure out if the metaserver is a requirement for the webfrontend
