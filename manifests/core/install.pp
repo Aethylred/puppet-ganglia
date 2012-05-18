@@ -82,8 +82,14 @@ class ganglia::core::install(
     },
     creates => "${ganglia::parameters::src_dir}/config.status",
     require => $with_gametad ? {
-      true      => [File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
-      default   => [File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
+      true      => $operatingsytem ? {
+        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
+        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools']],
+      },
+      default   => $operatingsystem ? {
+        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential']],
+        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools']],
+      },
     }
   }
 
