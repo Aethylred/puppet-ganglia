@@ -23,7 +23,7 @@ class ganglia::core::install(
   # Dependencies
   # NOTE: if we were using packages to install ganglia,
   # fewer packages would be required
-  if $with_gametad {
+  if $with_gmetad {
     case $operatingsystem {
       Ubuntu: {
         package{'build-essential': ensure => installed}
@@ -45,7 +45,10 @@ class ganglia::core::install(
           timeout   => 600,
           require   => Package['yum-plugin-downloadonly'],
         }
-
+        package{'apr-devel': ensure => installed}
+        package{'libconfuse-devel': ensure => installed}
+        package{'expat-devel': ensure => installed}
+        package{'pcre-devel': ensure => installed}
       }
     }
   } else {
@@ -54,7 +57,11 @@ class ganglia::core::install(
       # on monitored servers
     case $operatingsystem {
       Ubuntu: {
-
+        package{'build-essential': ensure => installed}
+        package{'libapr1-dev': ensure => installed}
+        package{'libconfuse-dev': ensure => installed}
+        package{'libexpat1-dev': ensure => installed}
+        package{'libpcre3-dev': ensure => installed}
       }
       CentOS: {
         package{'yum-plugin-downloadonly': ensure => installed}
@@ -66,7 +73,10 @@ class ganglia::core::install(
           timeout   => 600,
           require   => Package['yum-plugin-downloadonly'],
         }
-
+        package{'apr-devel': ensure => installed}
+        package{'libconfuse-devel': ensure => installed}
+        package{'expat-devel': ensure => installed}
+        package{'pcre-devel': ensure => installed}
       }
     }
   }
@@ -76,13 +86,13 @@ class ganglia::core::install(
   exec{'configure_core':
     cwd     => $ganglia::parameters::src_dir,
     user    => root,
-    command => $with_gametad ? {
+    command => $with_gmetad ? {
       true      => "${ganglia::parameters::src_dir}/configure --with-gmetad ${ganglia::parameters::configure_opts}",
       default   => "${ganglia::parameters::src_dir}/configure ${ganglia::parameters::configure_opts}",
     },
     creates => "${ganglia::parameters::src_dir}/config.status",
-    require => $with_gametad ? {
-      true      => $operatingsytem ? {
+    require => $with_gmetad ? {
+      true      => $operatingsystem ? {
         'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
         'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools']],
       },
@@ -111,7 +121,7 @@ class ganglia::core::install(
     creates   => $ganglia::parameters::metaserver_bin,
   }
 
-  if $with_gametad {
+  if $with_gmetad {
     file{'metaserver_init':
       ensure  => file,
       path    => $ganglia::parameters::metaserver_init,
@@ -155,7 +165,7 @@ class ganglia::core::install(
   } else {
     service{$ganglia::parameters::metaserver_service:
       ensure      => stopped,
-      enable      => true,
+      enable      => false,
       hasrestart  => true,
       hasstatus   => false,
     }
