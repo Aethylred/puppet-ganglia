@@ -2,7 +2,7 @@
 
 This Puppet module installs, configures and manage Ganglia and it's components, including the Ganglia Monitor service (`gmond`), the Ganglia Metadata service (`gmetad`), and the Ganglia Web Interface.
 
-[![Build Status](https://travis-ci.org/nesi/ganglia.png)](https://travis-ci.org/nesi/ganglia)
+[![Build Status](https://travis-ci.org/nesi/puppet-ganglia.png)](https://travis-ci.org/nesi/puppet-ganglia)
 
 # Dependencies
 
