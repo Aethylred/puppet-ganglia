@@ -1,8 +1,12 @@
-# blank
+# Ganglia
 
-This is a blank puppet module.
+This Puppet module installs, configures and manage Ganglia and it's components, including the Ganglia Monitor service (`gmond`), the Ganglia Metadata service (`gmetad`), and the Ganglia Web Interface.
 
-*NOTE:* Check README1st.markdown for usage of the blank puppet module template.
+# Dependencies
+
+* [apache](https://github.com/puppetlabs/puppetlabs-apache)
+* [stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
+* [rrd](https://github.com/nesi/puppet-rrd) (*optional*)
 
 # Licensing
 

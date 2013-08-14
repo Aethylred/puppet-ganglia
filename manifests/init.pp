@@ -28,6 +28,5 @@
 
 # [Remember: No empty lines between comments and class definition]
 class ganglia {
-
-
+  include ganglia::parameters
 }
