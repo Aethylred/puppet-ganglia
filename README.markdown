@@ -8,11 +8,7 @@ This Puppet module installs, configures and manage Ganglia and it's components, 
 
 * [apache](https://github.com/puppetlabs/puppetlabs-apache)
 * [stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
-* [rrd](https://github.com/nesi/puppet-rrd) (*optional*)
-
-# Licensing
-
-Update your license details here.
+* [rrd](https://github.com/nesi/puppet-rrd) ( *optional* )
 
 # Attribution
 
