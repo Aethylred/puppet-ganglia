@@ -31,6 +31,11 @@
 class ganglia::params{
   case $::osfamily{
     Debian: {
+      # Revised variables
+      $rrd_lib_package        = 'librrd4'
+      $rrd_tool_package       = 'rrdtool'
+      $rrd_cache_package      = 'rrdcached'
+      # Unrevised variables
       $web_package            = 'ganglia-webfrontend'
       $metaserver_package     = 'gmetad'
       $monitor_package        = 'ganglia-monitor'
@@ -50,6 +55,11 @@ class ganglia::params{
       $web_root               = '/var/www'
     }
     RedHat: {
+      # Revised variables
+      $rrd_lib_package        = 'rrdtool'
+      $rrd_tool_package       = 'rrdtool'
+      $rrd_cache_package      = 'rrdcached'
+      # Unrevised variables
       $web_package            = 'ganglia-web'
       $metaserver_package     = 'ganglia-gmetad'
       $monitor_package        = 'ganglia-gmond'
