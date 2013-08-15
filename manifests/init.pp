@@ -28,7 +28,8 @@
 
 # [Remember: No empty lines between comments and class definition]
 class ganglia (
-  $manage_rrd = undef
+  $manage_rrd       = undef,
+  $manage_rrdcache  = undef,
 ) inherits ganglia::params {
 
   # Set up the round robin database, the options are to
@@ -55,6 +56,25 @@ class ganglia (
       }
       require:{
         require rrd
+      }
+      default:{
+        fail{"The value '${manage_rrd}' is not valid for the manage_rrd parameter for the ganglia class.": }
+      }
+    }
+  }
+
+  if $manage_rrdcache {
+    case $manage_rrdcache {
+      package:{
+        package{$ganglia::params::rrd_cache_package:
+          ensure => installed,
+        }
+      }
+      module:{
+        include rrd::cache
+      }
+      require:{
+        require rrd::cache
       }
       default:{
         fail{"The value '${manage_rrd}' is not valid for the manage_rrd parameter for the ganglia class.": }
