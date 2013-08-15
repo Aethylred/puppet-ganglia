@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe 'ganglia', :type => :class do
   let :pre_condition do
-    'class rrd { $what = "a dummy class" }'
+    'class rrd { $what = "a dummy class" }
+     class rrd::cache { $what = "a dummy class"}'
   end
   context 'on a Debian OS' do
     let :facts do
@@ -13,26 +14,51 @@ describe 'ganglia', :type => :class do
     it {should include_class('ganglia::params')}
     it {should_not include_class('rrd')}
     it {should_not contain_package('librrd4')}
-    describe 'with manage_rrd => package' do
-      let :params do
-        { :manage_rrd => 'package'}
+    describe 'managing rrd libraries:' do
+      describe 'manage_rrd => package' do
+        let :params do
+          { :manage_rrd => 'package'}
+        end
+        it {should_not include_class('rrd')}
+        it {should contain_package('librrd4')}
       end
-      it {should_not include_class('rrd')}
-      it {should contain_package('librrd4')}
+      describe 'manage_rrd => module' do
+        let :params do
+          { :manage_rrd => 'module'}
+        end
+        it {should include_class('rrd')}
+        it {should_not contain_package('librrd4')}
+      end
+      describe 'manage_rrd => require' do
+        let :params do
+          { :manage_rrd => 'require'}
+        end
+        it {should include_class('rrd')}
+        it {should_not contain_package('librrd4')}
+      end
     end
-    describe 'with manage_rrd => module' do
-      let :params do
-        { :manage_rrd => 'module'}
+    describe 'managing rrd cache:' do
+      describe 'manage_rrdcache => package' do
+        let :params do
+          { :manage_rrdcache => 'package'}
+        end
+        it {should_not include_class('rrd::cache')}
+        it {should contain_package('rrdcached')}
       end
-      it {should include_class('rrd')}
-      it {should_not contain_package('librrd4')}
-    end
-    describe 'with manage_rrd => require' do
-      let :params do
-        { :manage_rrd => 'require'}
+      describe 'manage_rrdcache => module' do
+        let :params do
+          { :manage_rrdcache => 'module'}
+        end
+        it {should include_class('rrd::cache')}
+        it {should_not contain_package('rrdcached')}
       end
-      it {should include_class('rrd')}
-      it {should_not contain_package('librrd4')}
+      describe 'manage_rrdcache => require' do
+        let :params do
+          { :manage_rrdcache => 'require'}
+        end
+        it {should include_class('rrd::cache')}
+        it {should_not contain_package('rrdcached')}
+      end
     end
   end
   context 'on a RedHat OS' do
@@ -44,26 +70,29 @@ describe 'ganglia', :type => :class do
     it {should include_class('ganglia::params')}
     it {should_not include_class('rrd')}
     it {should_not contain_package('rrdtool')}
-    describe 'with manage_rrd => package' do
-      let :params do
-        { :manage_rrd => 'package'}
+    describe 'managing rrd libraries:' do
+      describe 'manage_rrd => package' do
+        let :params do
+          { :manage_rrd => 'package'}
+        end
+        it {should_not include_class('rrd')}
+        it {should contain_package('rrdtool')}
       end
-      it {should_not include_class('rrd')}
-      it {should contain_package('rrdtool')}
-    end
-    describe 'with manage_rrd => module' do
-      let :params do
-        { :manage_rrd => 'module'}
+      describe 'manage_rrd => module' do
+        let :params do
+          { :manage_rrd => 'module'}
+        end
+        it {should include_class('rrd')}
+        it {should_not contain_package('rrdtool')}
       end
-      it {should include_class('rrd')}
-      it {should_not contain_package('rrdtool')}
-    end
-    describe 'with manage_rrd => require' do
-      let :params do
-        { :manage_rrd => 'require'}
+      describe 'manage_rrd => require' do
+        let :params do
+          { :manage_rrd => 'require'}
+        end
+        it {should include_class('rrd')}
+        it {should_not contain_package('rrdtool')}
       end
-      it {should include_class('rrd')}
-      it {should_not contain_package('rrdtool')}
     end
+    # Testing manage_rrdcache not required, idential to Debian case
   end
 end
