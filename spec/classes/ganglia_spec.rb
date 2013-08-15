@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe 'ganglia', :type => :class do
-  before(:each) do
-    sub_const('rrd', double('Test double for rrd'))
+  let :pre_condition do
+    'class rrd { $what = "a dummy class" }'
   end
   context 'on a Debian OS' do
     let :facts do
