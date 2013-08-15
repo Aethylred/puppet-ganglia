@@ -27,6 +27,6 @@
 #     along with the ganglia Puppet module.  If not, see <http://www.gnu.org/licenses/>.
 
 # [Remember: No empty lines between comments and class definition]
-class ganglia {
-  include ganglia::parameters
+class ganglia inherits ganglia::params {
+
 }
