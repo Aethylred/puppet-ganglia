@@ -11,29 +11,29 @@ describe 'ganglia', :type => :class do
         :osfamily               => 'Debian',
       }
     end
-    it {should include_class('ganglia::params')}
-    it {should_not include_class('rrd')}
+    it {should contain_class('ganglia::params')}
+    it {should_not contain_class('rrd')}
     it {should_not contain_package('librrd4')}
     describe 'managing rrd libraries:' do
       describe 'manage_rrd => package' do
         let :params do
           { :manage_rrd => 'package'}
         end
-        it {should_not include_class('rrd')}
+        it {should_not contain_class('rrd')}
         it {should contain_package('librrd4')}
       end
       describe 'manage_rrd => module' do
         let :params do
           { :manage_rrd => 'module'}
         end
-        it {should include_class('rrd')}
+        it {should contain_class('rrd')}
         it {should_not contain_package('librrd4')}
       end
       describe 'manage_rrd => require' do
         let :params do
           { :manage_rrd => 'require'}
         end
-        it {should include_class('rrd')}
+        it {should contain_class('rrd')}
         it {should_not contain_package('librrd4')}
       end
     end
@@ -42,21 +42,21 @@ describe 'ganglia', :type => :class do
         let :params do
           { :manage_rrdcache => 'package'}
         end
-        it {should_not include_class('rrd::cache')}
+        it {should_not contain_class('rrd::cache')}
         it {should contain_package('rrdcached')}
       end
       describe 'manage_rrdcache => module' do
         let :params do
           { :manage_rrdcache => 'module'}
         end
-        it {should include_class('rrd::cache')}
+        it {should contain_class('rrd::cache')}
         it {should_not contain_package('rrdcached')}
       end
       describe 'manage_rrdcache => require' do
         let :params do
           { :manage_rrdcache => 'require'}
         end
-        it {should include_class('rrd::cache')}
+        it {should contain_class('rrd::cache')}
         it {should_not contain_package('rrdcached')}
       end
     end
@@ -67,29 +67,29 @@ describe 'ganglia', :type => :class do
         :osfamily               => 'RedHat',
       }
     end
-    it {should include_class('ganglia::params')}
-    it {should_not include_class('rrd')}
+    it {should contain_class('ganglia::params')}
+    it {should_not contain_class('rrd')}
     it {should_not contain_package('rrdtool')}
     describe 'managing rrd libraries:' do
       describe 'manage_rrd => package' do
         let :params do
           { :manage_rrd => 'package'}
         end
-        it {should_not include_class('rrd')}
+        it {should_not contain_class('rrd')}
         it {should contain_package('rrdtool')}
       end
       describe 'manage_rrd => module' do
         let :params do
           { :manage_rrd => 'module'}
         end
-        it {should include_class('rrd')}
+        it {should contain_class('rrd')}
         it {should_not contain_package('rrdtool')}
       end
       describe 'manage_rrd => require' do
         let :params do
           { :manage_rrd => 'require'}
         end
-        it {should include_class('rrd')}
+        it {should contain_class('rrd')}
         it {should_not contain_package('rrdtool')}
       end
     end
