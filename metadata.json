@@ -10,8 +10,9 @@
       "version_requirement": ">=3.2.0 <5.0.0"
     }
   ],
-  "source": "'https://github.com/nesi/puppet-ganglia'",
-  "project_page": "'https://github.com/nesi/puppet-ganglia'",
+  "source": "https://github.com/nesi/puppet-ganglia",
+  "project_page": "https://github.com/nesi/puppet-ganglia",
+  "issues_url": "https://github.com/nesi/puppet-ganglia/issues",
   "license": "Apache-2.0",
   "operatingsystem_support": [
     {
@@ -26,7 +27,6 @@
       "operatingsystemrelease": [
         "10.04",
         "12.04",
-        "13.10",
         "14.04"
       ]
     },
