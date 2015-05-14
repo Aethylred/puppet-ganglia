@@ -9,19 +9,19 @@ class ganglia::metaserver(
   $grid_name      = false,
   $grid_authority = false
 ){
-  case $operatingsystem {
+  case $::operatingsystem {
     Ubuntu:{
       class{'ganglia::core::install':
-        cluster_name    => $cluster_name,
-        cluster_url     => $cluster_url,
-        data_sources    => $data_sources,
-        latlong         => $latlong,
-        owner           => $owner,
-        grid_name       => $grid_name,
-        grid_authority  => $grid_authority,
+        cluster_name   => $cluster_name,
+        cluster_url    => $cluster_url,
+        data_sources   => $data_sources,
+        latlong        => $latlong,
+        owner          => $owner,
+        grid_name      => $grid_name,
+        grid_authority => $grid_authority,
         with_gmetad    => true,
       }
     }
-    default:{warning{"Ganglia metaserver not configured for $operatingsystem":}}
+    default:{warning{"Ganglia metaserver not configured for ${::operatingsystem}":}}
   }
 }

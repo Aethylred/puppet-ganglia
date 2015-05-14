@@ -19,51 +19,54 @@ class ganglia::web::install(
   include ganglia::web::download
 
   file{'web_makefile':
-    ensure  => file,
-    owner   => root,
-    group   => root,
+    ensure  => 'file',
+    owner   => 'root',
+    group   => 'root',
     path    => "${ganglia::parameters::web_dir}/Makefile",
     content => template("ganglia${ganglia::parameters::web_dir}/Makefile.erb"),
     require => File[$ganglia::parameters::web_dir],
   }
 
   exec{'install_web':
-    cwd       => $ganglia::parameters::web_dir,
-    user      => root,
-    provider  => shell,
-    command   => 'make install',
-    require   => File['web_makefile'],
-    creates   => $ganglia::parameters::web_site_dir,
-    notify    => Service['apache'],
+    cwd      => $ganglia::parameters::web_dir,
+    user     => 'root',
+    provider => 'shell',
+    command  => 'make install',
+    require  => File['web_makefile'],
+    creates  => $ganglia::parameters::web_site_dir,
+    notify   => Service['apache'],
   }
 
-  case $operatingsystem {
+  case $::operatingsystem {
     Ubuntu:{
       exec{'disable_default_site':
-        user      => root,
-        path      => ['/usr/sbin','/usr/bin'],
-        command   => 'a2dissite default',
-        onlyif    => 'test -e /etc/apache2/sites-enabled/*default',
-        notify    => Service['apache'],
+        user    => 'root',
+        path    => ['/usr/sbin','/usr/bin'],
+        command => 'a2dissite default',
+        onlyif  => 'test -e /etc/apache2/sites-enabled/*default',
+        notify  => Service['apache'],
       }
       file{'ganglia2_site':
-        ensure    => file,
-        owner      => root,
-        group     => root,
-        path      => '/etc/apache2/sites-enabled/ganglia2',
-        content   => template("ganglia/ganglia2.erb"),
-        require   => Exec['install_web'],
-        notify    => Service['apache'],
+        ensure  => 'file',
+        owner   => 'root',
+        group   => 'root',
+        path    => '/etc/apache2/sites-enabled/ganglia2',
+        content => template('ganglia/ganglia2.erb'),
+        require => Exec['install_web'],
+        notify  => Service['apache'],
       }
       exec{'enable_ganglia_site':
-        user      => root,
-        path      => ['/usr/sbin','/usr/bin'],
-        command   => 'a2ensite ganglia2',
-        creates   => '/etc/apache2/sites-enabled/ganglia2',
-        notify    => Service['apache'],
-        require   => [File['ganglia2_site'],Exec['disable_default_site']],
+        user    => 'root',
+        path    => ['/usr/sbin','/usr/bin'],
+        command => 'a2ensite ganglia2',
+        creates => '/etc/apache2/sites-enabled/ganglia2',
+        notify  => Service['apache'],
+        require => [File['ganglia2_site'],Exec['disable_default_site']],
       }
     }
-  } 
+    default: {
+      # Do nothing
+    }
+  }
 
 }

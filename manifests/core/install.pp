@@ -4,7 +4,7 @@
 
 class ganglia::core::install(
   $cluster_name   = 'mycluster',
-  $cluster_url    = "http://cluster.example.org",
+  $cluster_url    = 'http://cluster.example.org',
   $data_sources   = ['localhost'],
   $latlong        = 'N0 W0',
   $owner          = 'Nobody',
@@ -24,7 +24,7 @@ class ganglia::core::install(
   # NOTE: if we were using packages to install ganglia,
   # fewer packages would be required
   if $with_gmetad {
-    case $operatingsystem {
+    case $::operatingsystem {
       Ubuntu: {
         package{'build-essential':  ensure => installed}
         package{'rrdtool':          ensure => installed}
@@ -38,12 +38,12 @@ class ganglia::core::install(
       CentOS: {
         package{'yum-plugin-downloadonly': ensure => installed}
         exec{'dev_tools':
-          user      => root,
-          path      => ['/usr/bin'],
-          command   => "yum -y groupinstall 'Development Tools'",
-          unless    => "yum -y groupinstall 'Development Tools' --downloadonly",
-          timeout   => 600,
-          require   => Package['yum-plugin-downloadonly'],
+          user    => 'root',
+          path    => ['/usr/bin'],
+          command => "yum -y groupinstall 'Development Tools'",
+          unless  => "yum -y groupinstall 'Development Tools' --downloadonly",
+          timeout => '0600',
+          require => Package['yum-plugin-downloadonly'],
         }
         package{'apr-devel':        ensure => installed}
         package{'libconfuse-devel': ensure => installed}
@@ -52,9 +52,12 @@ class ganglia::core::install(
         package{'rrdtool-dev':      ensure => installed}
         package{'rrdtool':          ensure => installed}
       }
+      default: {
+        # Does nothing.
+      }
     }
   } else {
-    case $operatingsystem {
+    case $::operatingsystem {
       Ubuntu: {
         package{'build-essential':  ensure => installed}
         package{'pkg-config':       ensure => installed}
@@ -66,17 +69,48 @@ class ganglia::core::install(
       CentOS: {
         package{'yum-plugin-downloadonly': ensure => installed}
         exec{'dev_tools':
-          user      => root,
-          path      => ['/usr/bin'],
-          command   => "yum -y groupinstall 'Development Tools'",
-          unless    => "yum -y groupinstall 'Development Tools' --downloadonly",
-          timeout   => 600,
-          require   => Package['yum-plugin-downloadonly'],
+          user    => 'root',
+          path    => ['/usr/bin'],
+          command => "yum -y groupinstall 'Development Tools'",
+          unless  => '/usr/bin/yum grouplist "Development tools" | /bin/grep "^Installed Groups"',
+          timeout => '0600',
+          require => Package['yum-plugin-downloadonly'],
         }
         package{'apr-devel':        ensure => installed}
         package{'libconfuse-devel': ensure => installed}
         package{'expat-devel':      ensure => installed}
         package{'pcre-devel':       ensure => installed}
+      }
+      default: {
+        # Does nothing.
+      }
+    }
+  }
+
+  if $with_gmetad {
+    $configure_command = "${ganglia::parameters::src_dir}/configure --with-gmetad ${ganglia::parameters::configure_opts}"
+    case $::osfamily {
+      'Ubuntu': {
+        $configure_require = [File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']]
+      }
+      'RedHat':{
+        $configure_require = [File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel','rrdtool-dev','rrdtool']]
+      }
+      default:{
+        #does nothing
+      }
+    }
+  } else {
+    $configure_command = "${ganglia::parameters::src_dir}/configure ${ganglia::parameters::configure_opts}"
+    case $::osfamily {
+      'Ubuntu': {
+        $configure_require = [File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev']]
+      }
+      'RedHat':{
+        $configure_require = [File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']]
+      }
+      default:{
+        #does nothing
       }
     }
   }
@@ -85,71 +119,59 @@ class ganglia::core::install(
 
   exec{'configure_core':
     cwd     => $ganglia::parameters::src_dir,
-    user    => root,
-    command => $with_gmetad ? {
-      true      => "${ganglia::parameters::src_dir}/configure --with-gmetad ${ganglia::parameters::configure_opts}",
-      default   => "${ganglia::parameters::src_dir}/configure ${ganglia::parameters::configure_opts}",
-    },
+    user    => 'root',
+    command => $configure_command,
     creates => "${ganglia::parameters::src_dir}/config.status",
-    require => $with_gmetad ? {
-      true      => $operatingsystem ? {
-        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']],
-        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel','rrdtool-dev','rrdtool']],
-      },
-      default   => $operatingsystem ? {
-        'Ubuntu' =>[File[$ganglia::parameters::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev']],
-        'CentOS' =>[File[$ganglia::parameters::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']],
-      },
-    }
+    require => $configure_require,
   }
 
   exec{'make_core':
-    cwd       => $ganglia::parameters::src_dir,
-    user      => root,
-    provider  => shell,
-    command   => 'make',
-    require   => Exec['configure_core'],
-    creates   => "${ganglia::parameters::src_dir}/gmond/gmond",
+    cwd      => $ganglia::parameters::src_dir,
+    user     => 'root',
+    provider => 'shell',
+    command  => 'make',
+    require  => Exec['configure_core'],
+    creates  => "${ganglia::parameters::src_dir}/gmond/gmond",
   }
 
   exec{'install_core':
-    cwd       => $ganglia::parameters::src_dir,
-    user      => root,
-    provider  => shell,
-    command   => 'make install',
-    require   => Exec['configure_core'],
-    creates   => $ganglia::parameters::metaserver_bin,
+    cwd      => $ganglia::parameters::src_dir,
+    user     => 'root',
+    provider => 'shell',
+    command  => 'make install',
+    require  => Exec['configure_core'],
+    creates  => $ganglia::parameters::metaserver_bin,
   }
 
   if $with_gmetad {
     file{'metaserver_init':
-      ensure  => file,
+      ensure  => 'file',
       path    => $ganglia::parameters::metaserver_init,
-      owner   => root,
-      group   => root,
+      owner   => 'root',
+      group   => 'root',
       mode    => '0755',
-      content => template("ganglia${ganglia::parameters::metaserver_init}.${operatingsystem}.erb"),
+      content => template("ganglia${ganglia::parameters::metaserver_init}.${::operatingsystem}.erb"),
       require => Exec['install_core'],
       notify  => Service[$ganglia::parameters::metaserver_service],
     }
     file{$ganglia::parameters::rrd_parentdir:
-      ensure  => directory,
-      owner   => root,
-      group   => root,
+      ensure  => 'directory',
+      owner   => 'root',
+      group   => 'root',
       require => Exec['install_core'],
     }
 
     file{$ganglia::parameters::rrd_rootdir:
-      ensure  => directory,
-      owner   => nobody,
-      group   => root,
+      ensure  => 'directory',
+      owner   => 'nobody',
+      group   => 'root',
       require => [Exec['install_core'],File[$ganglia::parameters::rrd_parentdir]],
     }
 
     file{$ganglia::parameters::metaserver_conf:
-      ensure  => file,
-      owner   => root,
-      group   => root,
+      ensure  => 'file',
+      owner   => 'root',
+      group   => 'root',
       path    => $ganglia::parameters::metaserver_conf,
       content => template("ganglia${ganglia::parameters::metaserver_conf}.erb"),
       require => File[$ganglia::parameters::config_dir,$ganglia::parameters::rrd_parentdir,$ganglia::parameters::rrd_rootdir],
@@ -157,31 +179,31 @@ class ganglia::core::install(
     }
 
     service{$ganglia::parameters::metaserver_service:
-      ensure      => running,
-      enable      => true,
-      hasrestart  => true,
-      hasstatus   => false,
+      ensure     => 'running',
+      enable     => true,
+      hasrestart => true,
+      hasstatus  => false,
     }
   } else {
     service{$ganglia::parameters::metaserver_service:
-      ensure      => stopped,
-      enable      => false,
-      hasrestart  => true,
-      hasstatus   => false,
+      ensure     => 'stopped',
+      enable     => false,
+      hasrestart => true,
+      hasstatus  => false,
     }
   }
 
   file{$ganglia::parameters::config_dir:
-    ensure  => directory,
-    owner   => root,
-    group   => root,
+    ensure  => 'directory',
+    owner   => 'root',
+    group   => 'root',
     require => Exec['install_core'],
   }
 
   file{$ganglia::parameters::monitor_conf:
-    ensure  => file,
-    owner   => root,
-    group   => root,
+    ensure  => 'file',
+    owner   => 'root',
+    group   => 'root',
     path    => $ganglia::parameters::monitor_conf,
     content => template("ganglia${ganglia::parameters::monitor_conf}.erb"),
     require => File[$ganglia::parameters::config_dir],
@@ -189,22 +211,22 @@ class ganglia::core::install(
   }
   
   file{$ganglia::parameters::monitor_init:
-    ensure  => file,
+    ensure  => 'file',
     path    => $ganglia::parameters::monitor_init,
-    owner   => root,
-    group   => root,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0755',
-    content => template("ganglia${ganglia::parameters::monitor_init}.${operatingsystem}.erb"),
+    content => template("ganglia${ganglia::parameters::monitor_init}.${::operatingsystem}.erb"),
     require => Exec['install_core'],
     notify  => Service[$ganglia::parameters::monitor_service],
   }
 
   service{$ganglia::parameters::monitor_service:
-    ensure      => running,
-    enable      => true,
-    hasrestart  => true,
-    hasstatus   => false,
-    require     => File[$ganglia::parameters::monitor_init,$ganglia::parameters::monitor_conf],
+    ensure     => 'running',
+    enable     => true,
+    hasrestart => true,
+    hasstatus  => false,
+    require    => File[$ganglia::parameters::monitor_init,$ganglia::parameters::monitor_conf],
   }
 
 }
