@@ -1,0 +1,50 @@
+{
+  "name": "Aethylred-ganglia",
+  "version": "0.1.0",
+  "summary": "A Puppet module to install and manage Ganglia",
+  "author": "Aethylred",
+  "description": "A Puppet module to install and manage Ganglia components, including the Monitor (`gmond`), Metadata Service (`gmetad`), and Web Frontend (`webfrontend`).",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=3.2.0 <5.0.0"
+    }
+  ],
+  "source": "'https://github.com/nesi/puppet-ganglia'",
+  "project_page": "'https://github.com/nesi/puppet-ganglia'",
+  "license": "Apache-2.0",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04",
+        "13.10",
+        "14.04"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "5",
+        "6",
+        "7"
+      ]
+    }
+   ]
+}
