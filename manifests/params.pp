@@ -51,7 +51,7 @@ class ganglia::params{
       $web_root               = '/var/www/html'
     }
     default:{
-      fail("The OS Family '${::osfamily}' is not supported in the ganglia module!")
+      fail("The OS Family ${::osfamily} is not supported in the ganglia module")
     }
   }
 

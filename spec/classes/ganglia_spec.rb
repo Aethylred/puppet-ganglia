@@ -63,4 +63,12 @@ describe 'ganglia', :type => :class do
       end
     end
   end
+  context "on and Unknown operating system" do
+    let (:facts) do
+      { :osfamily => 'Unknown' }
+    end
+    it { should raise_error(Puppet::Error,
+      %r{The OS Family Unknown is not supported in the ganglia module}
+    ) }
+  end
 end
