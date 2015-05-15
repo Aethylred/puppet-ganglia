@@ -6,8 +6,8 @@ class ganglia::monitor(
   $latlong      = '0,0',
   $owner        = 'Nobody'
 ){
-  case $::operatingsystem {
-    Ubuntu,CentOS:{
+  case $::osfamily {
+    'Debian','RedHat':{
       class{'ganglia::core::install':
         cluster_name   => $cluster_name,
         cluster_url    => $cluster_url,
@@ -19,6 +19,8 @@ class ganglia::monitor(
         with_gmetad    => false,
       }
     }
-    default:{warning{"Ganglia monitor not configured for ${::operatingsystem}":}}
+    default:{
+      fail("Ganglia monitor not configured for ${::osfamily}")
+    }
   }
 }
