@@ -9,8 +9,8 @@ class ganglia::metaserver(
   $grid_name      = false,
   $grid_authority = false
 ){
-  case $::operatingsystem {
-    Ubuntu:{
+  case $::osfamily {
+    'Debian','RedHat':{
       class{'ganglia::core::install':
         cluster_name   => $cluster_name,
         cluster_url    => $cluster_url,
@@ -22,6 +22,8 @@ class ganglia::metaserver(
         with_gmetad    => true,
       }
     }
-    default:{warning{"Ganglia metaserver not configured for ${::operatingsystem}":}}
+    default:{
+      fail("Ganglia metaserver not configured for ${::osfamily}")
+    }
   }
 }
