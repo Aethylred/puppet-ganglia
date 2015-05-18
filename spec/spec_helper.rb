@@ -67,7 +67,39 @@ $supported_os = on_supported_os.map do |os, facts|
       :monitor_package    => 'ganglia-monitor',
       :apache_user        => 'www-data',
       :web_root           => '/var/www',
-      :web_site_dir       => '/var/www/gangila2'
+      :web_site_dir       => '/var/www/gangila2',
+      :base_packages      => [
+        'build-essential',
+        'libapr1-dev',
+        'pkg-config',
+        'libconfuse-dev',
+        'libexpat1-dev',
+        'libpcre3-dev',
+      ],
+      :gmetad_packages    => [
+        'rrdtool',
+        'librrd-dev'
+      ],
+      :configure_require => [
+        'File[/src/ganglia]',
+        'Package[build-essential]',
+        'Package[libapr1-dev]',
+        'Package[pkg-config]',
+        'Package[libconfuse-dev]',
+        'Package[libexpat1-dev]',
+        'Package[libpcre3-dev]'
+      ],
+      :gmetad_config_req => [
+        'File[/src/ganglia]',
+        'Package[build-essential]',
+        'Package[libapr1-dev]',
+        'Package[pkg-config]',
+        'Package[libconfuse-dev]',
+        'Package[libexpat1-dev]',
+        'Package[libpcre3-dev]',
+        'Package[librrd-dev]',
+        'Package[rrdtool]'
+      ]
     } )
   when 'RedHat'
     expects.merge!( {
@@ -79,7 +111,36 @@ $supported_os = on_supported_os.map do |os, facts|
       :monitor_package    => 'ganglia-gmond',
       :apache_user        => 'apache',
       :web_root           => '/var/www/html',
-      :web_site_dir       => '/var/www/html/gangila2'
+      :web_site_dir       => '/var/www/html/gangila2',
+      :base_packages           => [
+        'yum-plugin-downloadonly',
+        'apr-devel',
+        'libconfuse-devel',
+        'expat-devel',
+        'pcre-devel'
+      ],
+      :gmetad_packages    => [
+        'rrdtool-dev',
+        'rrdtool'
+      ],
+      :configure_require => [
+        'File[/src/ganglia]',
+        'Exec[dev_tools]',
+        'Package[apr-devel]',
+        'Package[libconfuse-devel]',
+        'Package[expat-devel]',
+        'Package[pcre-devel]',
+      ],
+      :gmetad_config_req => [
+        'File[/src/ganglia]',
+        'Exec[dev_tools]',
+        'Package[apr-devel]',
+        'Package[libconfuse-devel]',
+        'Package[expat-devel]',
+        'Package[pcre-devel]',
+        'Package[rrdtool-dev]',
+        'Package[rrdtool]'
+      ]
     } )
   end
 

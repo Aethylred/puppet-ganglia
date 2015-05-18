@@ -17,26 +17,26 @@ class ganglia::core::install(
   include ganglia::core::download
 
   # This manifest installs from the Ganglia web site, so no packages please 
-  package{$::ganglia::params::metaserver_package: ensure => purged}
-  package{$::ganglia::params::monitor_package: ensure => purged}
+  package{$::ganglia::params::metaserver_package: ensure => 'absent'}
+  package{$::ganglia::params::monitor_package: ensure => 'absent'}
 
   # Dependencies
   # NOTE: if we were using packages to install ganglia,
   # fewer packages would be required
   if $with_gmetad {
-    case $::operatingsystem {
-      Ubuntu: {
-        package{'build-essential':  ensure => installed}
-        package{'rrdtool':          ensure => installed}
-        package{'libapr1-dev':      ensure => installed}
-        package{'pkg-config':       ensure => installed}
-        package{'libconfuse-dev':   ensure => installed}
-        package{'libexpat1-dev':    ensure => installed}
-        package{'libpcre3-dev':     ensure => installed}
-        package{'librrd-dev':       ensure => installed}
+    case $::osfamily {
+      'Debian': {
+        package{'build-essential':  ensure => 'installed'}
+        package{'rrdtool':          ensure => 'installed'}
+        package{'libapr1-dev':      ensure => 'installed'}
+        package{'pkg-config':       ensure => 'installed'}
+        package{'libconfuse-dev':   ensure => 'installed'}
+        package{'libexpat1-dev':    ensure => 'installed'}
+        package{'libpcre3-dev':     ensure => 'installed'}
+        package{'librrd-dev':       ensure => 'installed'}
       }
-      CentOS: {
-        package{'yum-plugin-downloadonly': ensure => installed}
+      'Redhat': {
+        package{'yum-plugin-downloadonly': ensure => 'installed'}
         exec{'dev_tools':
           user    => 'root',
           path    => ['/usr/bin'],
@@ -45,20 +45,20 @@ class ganglia::core::install(
           timeout => '0600',
           require => Package['yum-plugin-downloadonly'],
         }
-        package{'apr-devel':        ensure => installed}
-        package{'libconfuse-devel': ensure => installed}
-        package{'expat-devel':      ensure => installed}
-        package{'pcre-devel':       ensure => installed}
-        package{'rrdtool-dev':      ensure => installed}
-        package{'rrdtool':          ensure => installed}
+        package{'apr-devel':        ensure => 'installed'}
+        package{'libconfuse-devel': ensure => 'installed'}
+        package{'expat-devel':      ensure => 'installed'}
+        package{'pcre-devel':       ensure => 'installed'}
+        package{'rrdtool-dev':      ensure => 'installed'}
+        package{'rrdtool':          ensure => 'installed'}
       }
       default: {
         # Does nothing.
       }
     }
   } else {
-    case $::operatingsystem {
-      Ubuntu: {
+    case $::osfamily {
+      'Debian': {
         package{'build-essential':  ensure => installed}
         package{'pkg-config':       ensure => installed}
         package{'libapr1-dev':      ensure => installed}
@@ -66,13 +66,13 @@ class ganglia::core::install(
         package{'libexpat1-dev':    ensure => installed}
         package{'libpcre3-dev':     ensure => installed}
       }
-      CentOS: {
+      'Redhat': {
         package{'yum-plugin-downloadonly': ensure => installed}
         exec{'dev_tools':
           user    => 'root',
           path    => ['/usr/bin'],
           command => "yum -y groupinstall 'Development Tools'",
-          unless  => '/usr/bin/yum grouplist "Development tools" | /bin/grep "^Installed Groups"',
+          unless  => "yum -y groupinstall 'Development Tools' --downloadonly",
           timeout => '0600',
           require => Package['yum-plugin-downloadonly'],
         }
@@ -115,7 +115,7 @@ class ganglia::core::install(
     }
   }
 
-  user{'nobody': ensure => present}
+  user{'nobody': ensure => 'present'}
 
   exec{'configure_core':
     cwd     => $::ganglia::params::src_dir,

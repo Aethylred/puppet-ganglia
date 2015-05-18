@@ -37,7 +37,7 @@
 # data_source "another source" 1.3.4.7:8655  1.3.4.8
 
 <% data_sources.each do |cluster| -%>
-data_source "<%= cluster['cluster_name'] %>" <%= cluster['cluster_hosts'].join(' ') %>
+data_source "<%= cluster['cluster_name'] %>" <%= Array(cluster['cluster_hosts']).join(' ') %>
 <% end -%>
 
 #
