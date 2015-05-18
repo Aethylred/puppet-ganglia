@@ -5,7 +5,7 @@
 # description: gmond startup script
 #
 
-GMOND=<%= scope.lookupvar('ganglia::parameters::monitor_bin')%>
+GMOND=<%= scope.lookupvar('ganglia::params::monitor_bin')%>
 
 . /etc/rc.d/init.d/functions
 

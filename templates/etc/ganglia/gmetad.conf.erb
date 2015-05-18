@@ -120,7 +120,7 @@ authority "<%= grid_authority %>"
 # Where gmetad stores its round-robin databases
 # default: "/var/lib/ganglia/rrds"
 # rrd_rootdir "/some/other/place"
-rrd_rootdir "<%= scope.lookupvar('ganglia::parameters::rrd_rootdir') %>"
+rrd_rootdir "<%= scope.lookupvar('ganglia::params::rrd_rootdir') %>"
 #
 #-------------------------------------------------------------------------------
 # In earlier versions of gmetad, hostnames were handled in a case

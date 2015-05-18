@@ -4,7 +4,7 @@
 # chkconfig: - 20 80
 # description: gmetad startup script
 #
-GMETAD=<%= scope.lookupvar('ganglia::parameters::metaserver_bin')%>
+GMETAD=<%= scope.lookupvar('ganglia::params::metaserver_bin')%>
 
 . /etc/rc.d/init.d/functions
 

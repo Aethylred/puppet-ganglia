@@ -1,7 +1,7 @@
 # Location where gweb should be installed to
-DESTDIR = <%= scope.lookupvar('ganglia::parameters::web_site_dir') %>
+DESTDIR = <%= scope.lookupvar('ganglia::params::web_site_dir') %>
 
-APACHE_USER = <%= scope.lookupvar('ganglia::parameters::apache_user') %>
+APACHE_USER = <%= scope.lookupvar('ganglia::params::apache_user') %>
 
 # Gweb version
 GWEB_MAJOR_VERSION = 3
