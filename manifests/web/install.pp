@@ -6,13 +6,13 @@ class ganglia::web::install(
     $site_admin = 'admin@example.org'
   ){
 
-  include ganglia::parameters
+  include ganglia::params
 
   # Need to figure out if the metaserver is a requirement for the webfrontend
   # include ganglia::metaserver
 
 # We are going to install the 'latest stable' from the ganglia site
-  package{$ganglia::parameters::web_package:
+  package{$ganglia::params::web_package:
     ensure => purged,
   }
 
@@ -22,18 +22,18 @@ class ganglia::web::install(
     ensure  => 'file',
     owner   => 'root',
     group   => 'root',
-    path    => "${ganglia::parameters::web_dir}/Makefile",
-    content => template("ganglia${ganglia::parameters::web_dir}/Makefile.erb"),
-    require => File[$ganglia::parameters::web_dir],
+    path    => "${ganglia::params::web_dir}/Makefile",
+    content => template("ganglia${ganglia::params::web_dir}/Makefile.erb"),
+    require => File[$ganglia::params::web_dir],
   }
 
   exec{'install_web':
-    cwd      => $ganglia::parameters::web_dir,
+    cwd      => $ganglia::params::web_dir,
     user     => 'root',
     provider => 'shell',
     command  => 'make install',
     require  => File['web_makefile'],
-    creates  => $ganglia::parameters::web_site_dir,
+    creates  => $ganglia::params::web_site_dir,
     notify   => Service['apache'],
   }
 

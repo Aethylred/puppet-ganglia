@@ -3,12 +3,15 @@
 class ganglia::web(
     $site_admin = 'admin@example.org'
   ){
-  case $::operatingsystem {
-    Ubuntu:{
+  case $::osfamily {
+    'Debian','RedHat':{
       class{'ganglia::web::install':
         site_admin => $site_admin,
       }
     }
-    default:{warning{"Ganglia web interface is not configured for ${::operatingsystem}":}}
+    default:{
+      fail("Ganglia web interface is not configured for ${::osfamily
+    }")
+    }
   }
 }

@@ -2,18 +2,18 @@
 
 class ganglia::web::download{
 
-  include ganglia::parameters
+  include ganglia::params
 
   exec{'get_web':
-    cwd     => $ganglia::parameters::src_root,
+    cwd     => $ganglia::params::src_root,
     path    => ['/usr/bin','/bin'],
     user    => root,
-    command => "wget -O - ${ganglia::parameters::web_source_url}|tar xzv",
-    creates => $ganglia::parameters::web_version_dir,
-    require => File[$ganglia::parameters::src_root],
+    command => "wget -O - ${ganglia::params::web_source_url}|tar xzv",
+    creates => $ganglia::params::web_version_dir,
+    require => File[$ganglia::params::src_root],
   }
 
-  file{$ganglia::parameters::web_version_dir:
+  file{$ganglia::params::web_version_dir:
     ensure  => directory,
     recurse => true,
     owner   => root,
@@ -21,10 +21,10 @@ class ganglia::web::download{
     require => Exec['get_web'],
   }
 
-  file{$ganglia::parameters::web_dir:
+  file{$ganglia::params::web_dir:
     ensure  => link,
-    path    => $ganglia::parameters::web_dir,
-    target  => $ganglia::parameters::web_version_dir,
-    require => File[$ganglia::parameters::web_version_dir]
+    path    => $ganglia::params::web_dir,
+    target  => $ganglia::params::web_version_dir,
+    require => File[$ganglia::params::web_version_dir]
   }
 }
