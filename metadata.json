@@ -1,6 +1,6 @@
 {
   "name": "Aethylred-ganglia",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "summary": "A Puppet module to install and manage Ganglia",
   "author": "Aethylred",
   "description": "A Puppet module to install and manage Ganglia components, including the Monitor (`gmond`), Metadata Service (`gmetad`), and Web Frontend (`webfrontend`).",
