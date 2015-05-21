@@ -43,8 +43,6 @@ $supported_os = on_supported_os.map do |os, facts|
     :prefix             => '/usr',
     :metaserver_bin     => '/usr/sbin/gmetad',
     :monitor_bin        => '/usr/sbin/gmond',
-    :rrd_parentdir      => '/var/lib/ganglia',
-    :rrd_rootdir        => '/var/lib/ganglia/rrds',
     :config_dir         => '/etc/ganglia',
     :core_source_file   => 'ganglia-3.3.7.tar.gz',
     :core_source_url    => 'http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/3.3.7/ganglia-3.3.7.tar.gz',
@@ -59,9 +57,6 @@ $supported_os = on_supported_os.map do |os, facts|
   case facts[:osfamily]
   when 'Debian'
     expects.merge!( {
-      :rrd_lib_package    => 'librrd4',
-      :rrd_tool_package   => 'rrdtool',
-      :rrd_cache_package  => 'rrdcached',
       :web_package        => 'ganglia-webfrontend',
       :metaserver_package => 'gmetad',
       :monitor_package    => 'ganglia-monitor',
@@ -77,8 +72,7 @@ $supported_os = on_supported_os.map do |os, facts|
         'libpcre3-dev',
       ],
       :gmetad_packages    => [
-        'rrdtool',
-        'librrd-dev'
+
       ],
       :configure_require => [
         'File[/src/ganglia]',
@@ -97,15 +91,10 @@ $supported_os = on_supported_os.map do |os, facts|
         'Package[libconfuse-dev]',
         'Package[libexpat1-dev]',
         'Package[libpcre3-dev]',
-        'Package[librrd-dev]',
-        'Package[rrdtool]'
       ]
     } )
   when 'RedHat'
     expects.merge!( {
-      :rrd_lib_package    => 'rrdtool',
-      :rrd_tool_package   => 'rrdtool',
-      :rrd_cache_package  => 'rrdcached',
       :web_package        => 'ganglia-web',
       :metaserver_package => 'ganglia-gmetad',
       :monitor_package    => 'ganglia-gmond',
@@ -120,8 +109,7 @@ $supported_os = on_supported_os.map do |os, facts|
         'pcre-devel'
       ],
       :gmetad_packages    => [
-        'rrdtool-dev',
-        'rrdtool'
+
       ],
       :configure_require => [
         'File[/src/ganglia]',
@@ -138,8 +126,6 @@ $supported_os = on_supported_os.map do |os, facts|
         'Package[libconfuse-devel]',
         'Package[expat-devel]',
         'Package[pcre-devel]',
-        'Package[rrdtool-dev]',
-        'Package[rrdtool]'
       ]
     } )
   end

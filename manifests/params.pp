@@ -2,9 +2,6 @@
 class ganglia::params{
   case $::osfamily{
     'Debian': {
-      $rrd_lib_package        = 'librrd4'
-      $rrd_tool_package       = 'rrdtool'
-      $rrd_cache_package      = 'rrdcached'
       $web_package            = 'ganglia-webfrontend'
       $metaserver_package     = 'gmetad'
       $monitor_package        = 'ganglia-monitor'
@@ -12,9 +9,6 @@ class ganglia::params{
       $web_root               = '/var/www'
     }
     'RedHat': {
-      $rrd_lib_package        = 'rrdtool'
-      $rrd_tool_package       = 'rrdtool'
-      $rrd_cache_package      = 'rrdcached'
       $web_package            = 'ganglia-web'
       $metaserver_package     = 'ganglia-gmetad'
       $monitor_package        = 'ganglia-gmond'
@@ -33,8 +27,6 @@ class ganglia::params{
   $config_dir             = '/etc/ganglia'
   $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
   $monitor_conf           = "${config_dir}/${monitor_service}.conf"
-  $rrd_parentdir          = '/var/lib/ganglia'
-  $rrd_rootdir            = '/var/lib/ganglia/rrds'
   $prefix                 = '/usr'
   $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
   $monitor_bin            = "${prefix}/sbin/${monitor_service}"

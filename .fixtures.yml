@@ -3,5 +3,8 @@ fixtures:
     stdlib:
       repo: 'puppetlabs-stdlib'
       ref:  '4.6.0'
+    rrd:
+      repo: 'Aethylred-rrd'
+      ref:  '0.1.1'
   symlinks:
     ganglia: "#{source_dir}"

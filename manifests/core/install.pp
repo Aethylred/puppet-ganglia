@@ -27,13 +27,11 @@ class ganglia::core::install(
     case $::osfamily {
       'Debian': {
         package{'build-essential':  ensure => 'installed'}
-        package{'rrdtool':          ensure => 'installed'}
         package{'libapr1-dev':      ensure => 'installed'}
         package{'pkg-config':       ensure => 'installed'}
         package{'libconfuse-dev':   ensure => 'installed'}
         package{'libexpat1-dev':    ensure => 'installed'}
         package{'libpcre3-dev':     ensure => 'installed'}
-        package{'librrd-dev':       ensure => 'installed'}
       }
       'Redhat': {
         package{'yum-plugin-downloadonly': ensure => 'installed'}
@@ -49,8 +47,6 @@ class ganglia::core::install(
         package{'libconfuse-devel': ensure => 'installed'}
         package{'expat-devel':      ensure => 'installed'}
         package{'pcre-devel':       ensure => 'installed'}
-        package{'rrdtool-dev':      ensure => 'installed'}
-        package{'rrdtool':          ensure => 'installed'}
       }
       default: {
         # Does nothing.
@@ -91,10 +87,10 @@ class ganglia::core::install(
     $configure_command = "${::ganglia::params::src_dir}/configure --with-gmetad ${::ganglia::params::configure_opts}"
     case $::osfamily {
       'Debian': {
-        $configure_require = [File[$::ganglia::params::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev','librrd-dev','rrdtool']]
+        $configure_require = [File[$::ganglia::params::src_dir],Package['build-essential','libapr1-dev','pkg-config','libconfuse-dev','libexpat1-dev','libpcre3-dev']]
       }
       'RedHat':{
-        $configure_require = [File[$::ganglia::params::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel','rrdtool-dev','rrdtool']]
+        $configure_require = [File[$::ganglia::params::src_dir],Exec['dev_tools'],Package['apr-devel','libconfuse-devel','expat-devel','pcre-devel']]
       }
       default:{
         #does nothing
@@ -154,19 +150,6 @@ class ganglia::core::install(
       require => Exec['install_core'],
       notify  => Service[$::ganglia::params::metaserver_service],
     }
-    file{$::ganglia::params::rrd_parentdir:
-      ensure  => 'directory',
-      owner   => 'root',
-      group   => 'root',
-      require => Exec['install_core'],
-    }
-
-    file{$::ganglia::params::rrd_rootdir:
-      ensure  => 'directory',
-      owner   => 'nobody',
-      group   => 'root',
-      require => [Exec['install_core'],File[$::ganglia::params::rrd_parentdir]],
-    }
 
     file{$::ganglia::params::metaserver_conf:
       ensure  => 'file',
@@ -174,7 +157,7 @@ class ganglia::core::install(
       group   => 'root',
       path    => $::ganglia::params::metaserver_conf,
       content => template("ganglia${::ganglia::params::metaserver_conf}.erb"),
-      require => File[$::ganglia::params::config_dir,$::ganglia::params::rrd_parentdir,$::ganglia::params::rrd_rootdir],
+      require => File[$::ganglia::params::config_dir,$::ganglia::params::rrd_parentdir],
       notify  => Service[$::ganglia::params::metaserver_service,'apache'],
     }
 

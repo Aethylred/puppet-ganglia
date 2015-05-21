@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe 'ganglia::core::download', :type => :class do
-  let :pre_condition do
-    'class rrd { $what = "a dummy class" }
-     class rrd::cache { $what = "a dummy class"}'
-  end
 
   $supported_os.each do | os_expects |
     os      = os_expects[:os]
