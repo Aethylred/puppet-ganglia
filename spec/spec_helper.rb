@@ -71,10 +71,9 @@ $supported_os = on_supported_os.map do |os, facts|
         'libexpat1-dev',
         'libpcre3-dev',
       ],
-      :gmetad_packages    => [
-
-      ],
-      :configure_require => [
+      :gmetad_package     => 'gmetad',
+      :gmond_package      => 'ganglia-monitor',
+      :configure_require  => [
         'File[/src/ganglia]',
         'Package[build-essential]',
         'Package[libapr1-dev]',
@@ -108,9 +107,8 @@ $supported_os = on_supported_os.map do |os, facts|
         'expat-devel',
         'pcre-devel'
       ],
-      :gmetad_packages    => [
-
-      ],
+      :gmetad_package     => 'ganglia-gmetad',
+      :gmond_package      => 'ganglia-gmond',
       :configure_require => [
         'File[/src/ganglia]',
         'Exec[dev_tools]',

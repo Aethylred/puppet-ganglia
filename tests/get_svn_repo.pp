@@ -1,0 +1,3 @@
+class{'ganglia':
+  provider => 'svn'
+}

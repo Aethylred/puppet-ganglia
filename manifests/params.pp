@@ -2,23 +2,28 @@
 class ganglia::params{
   case $::osfamily{
     'Debian': {
-      $web_package            = 'ganglia-webfrontend'
-      $metaserver_package     = 'gmetad'
-      $monitor_package        = 'ganglia-monitor'
-      $apache_user            = 'www-data'
-      $web_root               = '/var/www'
+      $web_package    = 'ganglia-webfrontend'
+      $gmetad_package = 'gmetad'
+      $gmond_package  = 'ganglia-monitor'
+      $apache_user    = 'www-data'
+      $web_root       = '/var/www'
     }
     'RedHat': {
-      $web_package            = 'ganglia-web'
-      $metaserver_package     = 'ganglia-gmetad'
-      $monitor_package        = 'ganglia-gmond'
-      $apache_user            = 'apache'
-      $web_root               = '/var/www/html'
+      $web_package    = 'ganglia-web'
+      $gmetad_package = 'ganglia-gmetad'
+      $gmond_package  = 'ganglia-gmond'
+      $apache_user    = 'apache'
+      $web_root       = '/var/www/html'
     }
     default:{
       fail("The OS Family ${::osfamily} is not supported in the ganglia module")
     }
   }
+
+  # Revised paramters
+  $core_src_dir = '/usr/src/ganglia'
+
+  # pre 1.0.0 parameters
 
   $metaserver_service     = 'gmetad'
   $monitor_service        = 'gmond'

@@ -11,8 +11,6 @@ describe 'ganglia::core::install', :type => :class do
       describe 'with no parameters' do
         it{ should contain_class('ganglia::params') }
         it{ should contain_class('ganglia::core::download') }
-        it{ should contain_package(expects[:metaserver_package]).with_ensure('absent') }
-        it{ should contain_package(expects[:monitor_package]).with_ensure('absent') }
         expects[:base_packages].each do | dep_package |
           it{ should contain_package(dep_package).with_ensure('installed') }
         end
@@ -71,10 +69,7 @@ describe 'ganglia::core::install', :type => :class do
       end
       describe 'with metadata service' do
         let :params do
-            { :with_gmetad => true }
-          end
-        expects[:gmetad_packages].each do | dep_package |
-          it{ should contain_package(dep_package).with_ensure('installed') }
+          { :with_gmetad => true }
         end
         expects[:base_packages].each do | dep_package |
           it{ should contain_package(dep_package).with_ensure('installed') }

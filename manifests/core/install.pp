@@ -17,8 +17,8 @@ class ganglia::core::install(
   include ganglia::core::download
 
   # This manifest installs from the Ganglia web site, so no packages please 
-  package{$::ganglia::params::metaserver_package: ensure => 'absent'}
-  package{$::ganglia::params::monitor_package: ensure => 'absent'}
+  # package{$::ganglia::params::metaserver_package: ensure => 'absent'}
+  # package{$::ganglia::params::monitor_package: ensure => 'absent'}
 
   # Dependencies
   # NOTE: if we were using packages to install ganglia,
@@ -157,7 +157,7 @@ class ganglia::core::install(
       group   => 'root',
       path    => $::ganglia::params::metaserver_conf,
       content => template("ganglia${::ganglia::params::metaserver_conf}.erb"),
-      require => File[$::ganglia::params::config_dir,$::ganglia::params::rrd_parentdir],
+      require => File[$::ganglia::params::config_dir],
       notify  => Service[$::ganglia::params::metaserver_service,'apache'],
     }
 
