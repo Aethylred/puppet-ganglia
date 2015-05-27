@@ -13,6 +13,7 @@ class ganglia (
     'source': {
       class{ 'ganglia::core::install::source':
         source_uri   => $source_uri,
+        core_version => $core_version,
         core_src_dir => $core_src_dir,
         before       => Anchor['post_core_install']
       }

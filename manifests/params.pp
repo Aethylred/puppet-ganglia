@@ -45,7 +45,7 @@ class ganglia::params{
 
 # Set software versions
   $web_version        = '3.4.2'
-  $core_version       = '3.3.7'
+  $core_version       = '3.7.1'
   $pyclient_version   = '3.3.0'
 
 # Set software source URLs and files  
