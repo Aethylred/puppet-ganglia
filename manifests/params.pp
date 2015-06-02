@@ -21,7 +21,8 @@ class ganglia::params{
   }
 
   # Revised paramters
-  $core_src_dir = '/usr/src/ganglia'
+  $core_src_dir  = '/usr/src/ganglia'
+  $core_repo_ref = 'release/3.7'
 
   # pre 1.0.0 parameters
 
