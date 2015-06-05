@@ -63,6 +63,12 @@ $supported_os = on_supported_os.map do |os, facts|
       :apache_user        => 'www-data',
       :web_root           => '/var/www',
       :web_site_dir       => '/var/www/gangila2',
+      :dep_packages       => [
+        'libapr1-dev',
+        'libconfuse-dev',
+        'libexpat1-dev',
+        'libpcre3-dev'
+      ],
       :base_packages      => [
         'build-essential',
         'libapr1-dev',
@@ -100,6 +106,12 @@ $supported_os = on_supported_os.map do |os, facts|
       :apache_user        => 'apache',
       :web_root           => '/var/www/html',
       :web_site_dir       => '/var/www/html/gangila2',
+      :dep_packages       => [
+        'apr-devel',
+        'libconfuse-devel',
+        'expat-devel',
+        'pcre-devel'
+      ],
       :base_packages           => [
         'yum-plugin-downloadonly',
         'apr-devel',

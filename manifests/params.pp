@@ -7,6 +7,12 @@ class ganglia::params{
       $gmond_package  = 'ganglia-monitor'
       $apache_user    = 'www-data'
       $web_root       = '/var/www'
+      $dep_packages   = [
+        'libapr1-dev',
+        'libconfuse-dev',
+        'libexpat1-dev',
+        'libpcre3-dev'
+      ]
     }
     'RedHat': {
       $web_package    = 'ganglia-web'
@@ -14,6 +20,12 @@ class ganglia::params{
       $gmond_package  = 'ganglia-gmond'
       $apache_user    = 'apache'
       $web_root       = '/var/www/html'
+      $dep_packages   = [
+        'apr-devel',
+        'libconfuse-devel',
+        'expat-devel',
+        'pcre-devel'
+      ]
     }
     default:{
       fail("The OS Family ${::osfamily} is not supported in the ganglia module")
@@ -21,8 +33,10 @@ class ganglia::params{
   }
 
   # Revised paramters
-  $core_src_dir  = '/usr/src/ganglia'
-  $core_repo_ref = 'release/3.7'
+  $core_src_dir   = '/usr/src/ganglia'
+  $core_repo_ref  = 'release/3.7'
+  $config_dir     = '/etc/ganglia'
+
 
   # pre 1.0.0 parameters
 
@@ -30,15 +44,14 @@ class ganglia::params{
   $monitor_service        = 'gmond'
   $metaserver_init        = "/etc/init.d/${metaserver_service}"
   $monitor_init           = "/etc/init.d/${monitor_service}"
-  $config_dir             = '/etc/ganglia'
   $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
   $monitor_conf           = "${config_dir}/${monitor_service}.conf"
-  $prefix                 = '/usr'
   $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
   $monitor_bin            = "${prefix}/sbin/${monitor_service}"
 
 # Installation parameters
   $src_root       = '/src'
+  $prefix         = '/usr'
 
 # configure options
   $configure_opts     = "--prefix=${prefix} --sysconfdir=${config_dir}"

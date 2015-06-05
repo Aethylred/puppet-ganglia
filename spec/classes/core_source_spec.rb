@@ -5,7 +5,6 @@ describe 'ganglia::core::install::source', :type => :class do
   $supported_os.each do | os_expects |
     os      = os_expects[:os]
     facts   = os_expects[:facts]
-    expects = os_expects[:expects]
     context "on #{os}" do
       let (:facts) { facts }
       it { should contain_class('ganglia::params') }
