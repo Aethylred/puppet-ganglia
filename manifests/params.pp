@@ -11,7 +11,8 @@ class ganglia::params{
         'libapr1-dev',
         'libconfuse-dev',
         'libexpat1-dev',
-        'libpcre3-dev'
+        'libpcre3-dev',
+        'libck-dev'
       ]
     }
     'RedHat': {

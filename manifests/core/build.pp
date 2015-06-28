@@ -54,6 +54,7 @@ class ganglia::core::build (
   }
 
   exec{'configure_core':
+    path    => ['/bin','/usr/bin','/sbin'],
     cwd     => $core_src_dir,
     command => $configure_command,
     creates => "${core_src_dir}/config.status",
@@ -61,8 +62,9 @@ class ganglia::core::build (
   }
 
   exec{'make_core':
+    path    => ['/bin','/usr/bin','/sbin'],
     cwd     => $core_src_dir,
-    command => 'make',
+    command => "${core_src_dir}/make",
     require => Exec['configure_core'],
     creates => "${core_src_dir}/gmond/gmond",
   }

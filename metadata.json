@@ -16,6 +16,10 @@
     {
       "name": "Aethylred/rrd",
       "version_requirement": ">=0.1.1 <2.0.0"
+    },
+    {
+      "name": "Aethylred/ck",
+      "version_requirement": ">=0.0.1 <2.0.0"
     }
   ],
   "source": "https://github.com/nesi/puppet-ganglia",
@@ -33,7 +37,6 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "10.04",
         "12.04",
         "14.04"
       ]

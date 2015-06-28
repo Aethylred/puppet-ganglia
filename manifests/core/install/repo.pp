@@ -36,4 +36,11 @@ class ganglia::core::install::repo (
     target  => $download_dir,
     require => File['core_repo_download_dir']
   }
+
+  exec{'repo_booststrap':
+    cwd     => $core_src_dir,
+    command => "${core_src_dir}/bootstrap",
+    creates => "${core_src_dir}/configure",
+    require => File['ganglia_core_source_dir']
+  }
 }
