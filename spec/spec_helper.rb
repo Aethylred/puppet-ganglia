@@ -67,7 +67,9 @@ $supported_os = on_supported_os.map do |os, facts|
         'libapr1-dev',
         'libconfuse-dev',
         'libexpat1-dev',
-        'libpcre3-dev'
+        'libpcre3-dev',
+        'automake',
+        'libtool'
       ],
       :base_packages      => [
         'build-essential',

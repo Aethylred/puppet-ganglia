@@ -50,6 +50,7 @@ class ganglia::core::build (
   if $dep_packages {
     package{$dep_packages:
       ensure => 'installed',
+      before => Exec['configure_core'],
     }
   }
 
