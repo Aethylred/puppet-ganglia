@@ -38,6 +38,7 @@ class ganglia::params{
   $core_src_dir   = '/usr/src/ganglia'
   $core_repo_ref  = 'release/3.7'
   $config_dir     = '/etc/ganglia'
+  $prefix         = '/usr/local'
 
 
   # pre 1.0.0 parameters
@@ -53,7 +54,6 @@ class ganglia::params{
 
 # Installation parameters
   $src_root       = '/src'
-  $prefix         = '/usr'
 
 # configure options
   $configure_opts     = "--prefix=${prefix} --sysconfdir=${config_dir}"

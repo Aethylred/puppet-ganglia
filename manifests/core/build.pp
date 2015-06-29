@@ -6,6 +6,7 @@ class ganglia::core::build (
   $enable_perl    = false,
   $enable_status  = false,
   $disable_sflow  = false,
+  $prefix         = $ganglia::params::prefix,
   $dep_packages   = $ganglia::params::dep_packages,
   $config_dir     = $ganglia::params::config_dir
 ) inherits ganglia::params {
@@ -43,7 +44,7 @@ class ganglia::core::build (
     $disable_sflow_option = ''
   }
 
-  $configure_options = "${gmetad_option}${disable_python_option}${enable_perl_option}${enable_status_option}${disable_sflow_option}--prefix=${core_src_dir} --sysconfdir=${config_dir}"
+  $configure_options = "${gmetad_option}${disable_python_option}${enable_perl_option}${enable_status_option}${disable_sflow_option}--prefix=${prefix} --sysconfdir=${config_dir}"
   $configure_command = "${core_src_dir}/configure ${configure_options}"
 
   # Passing false or undefined means no packages required!
@@ -68,6 +69,14 @@ class ganglia::core::build (
     command => 'make',
     require => Exec['configure_core'],
     creates => "${core_src_dir}/gmond/gmond",
+  }
+
+  exec{'make_install':
+    path    => ['/bin','/usr/bin','/sbin'],
+    cwd     => $core_src_dir,
+    command => 'make install',
+    require => Exec['make_core'],
+    creates => "${prefix}/sbin/gmond",
   }
 
 }
