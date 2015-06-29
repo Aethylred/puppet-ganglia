@@ -21,7 +21,7 @@ describe 'ganglia::core::build', :type => :class do
         configure_require.push('File[/usr/src/ganglia]')
         it { should contain_exec('configure_core').with(
           'cwd'     => '/usr/src/ganglia',
-          'command' => '/usr/src/ganglia/configure --with-gmetad --prefix=/usr/src/ganglia --sysconfdir=/etc/ganglia',
+          'command' => '/usr/src/ganglia/configure --with-gmetad --prefix=/usr/local --sysconfdir=/etc/ganglia',
           'creates' => '/usr/src/ganglia/config.status',
           'require' => configure_require
         ) }
@@ -40,6 +40,7 @@ describe 'ganglia::core::build', :type => :class do
             :enable_perl    => true,
             :enable_status  => true,
             :disable_sflow  => true,
+            :prefix         => '/opt/ganglia',
             :dep_packages   => 'magic_bag',
             :config_dir     => '/opt/ganglia/config'
           }
@@ -47,7 +48,7 @@ describe 'ganglia::core::build', :type => :class do
         it { should_not contain_class('rrd') }
         it { should contain_exec('configure_core').with(
           'cwd'     => '/src/ganglia2',
-          'command' => '/src/ganglia2/configure --disable-python --enable-perl --enable-status --disable-sflow --prefix=/src/ganglia2 --sysconfdir=/opt/ganglia/config',
+          'command' => '/src/ganglia2/configure --disable-python --enable-perl --enable-status --disable-sflow --prefix=/opt/ganglia --sysconfdir=/opt/ganglia/config',
           'creates' => '/src/ganglia2/config.status',
           'require' => [
             'Package[magic_bag]',

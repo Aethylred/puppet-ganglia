@@ -38,8 +38,8 @@ class ganglia::params{
   $core_src_dir   = '/usr/src/ganglia'
   $core_repo_ref  = 'release/3.7'
   $config_dir     = '/etc/ganglia'
-  $prefix         = '/usr/local'
-
+  $build_prefix   = '/usr/local'
+  $package_prefix = '/usr'
 
   # pre 1.0.0 parameters
 
@@ -49,14 +49,12 @@ class ganglia::params{
   $monitor_init           = "/etc/init.d/${monitor_service}"
   $metaserver_conf        = "${config_dir}/${metaserver_service}.conf"
   $monitor_conf           = "${config_dir}/${monitor_service}.conf"
-  $metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
-  $monitor_bin            = "${prefix}/sbin/${monitor_service}"
+  #$metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
+  #$monitor_bin            = "${prefix}/sbin/${monitor_service}"
 
-# Installation parameters
-  $src_root       = '/src'
 
 # configure options
-  $configure_opts     = "--prefix=${prefix} --sysconfdir=${config_dir}"
+  #$configure_opts     = "--prefix=${prefix} --sysconfdir=${config_dir}"
 
 
 # Set software versions
@@ -65,14 +63,9 @@ class ganglia::params{
   $pyclient_version   = '3.3.0'
 
 # Set software source URLs and files  
-  $core_source_file   = "ganglia-${core_version}.tar.gz"
-  $core_source_url    = "http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/${core_version}/${core_source_file}"
-  $src_dir            = "${src_root}/ganglia"
-  $src_version_dir    = "${src_dir}-${core_version}"
-
   $web_source_file    = "ganglia-web-${web_version}.tar.gz"
   $web_source_url     = "http://downloads.sourceforge.net/project/ganglia/ganglia-web/${web_version}/${web_source_file}"
-  $web_dir            = "${src_root}/ganglia-web"
+  $web_dir            = '/usr/src/ganglia-web'
   $web_version_dir    = "${web_dir}-${web_version}"
   $web_site_dir       = "${web_root}/gangila2"
 

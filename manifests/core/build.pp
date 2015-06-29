@@ -6,7 +6,7 @@ class ganglia::core::build (
   $enable_perl    = false,
   $enable_status  = false,
   $disable_sflow  = false,
-  $prefix         = $ganglia::params::prefix,
+  $prefix         = $ganglia::params::build_prefix,
   $dep_packages   = $ganglia::params::dep_packages,
   $config_dir     = $ganglia::params::config_dir
 ) inherits ganglia::params {

@@ -4,6 +4,7 @@ class ganglia (
   $core_version  = '3.7.1',
   $source_uri    = undef,
   $repo_uri      = undef,
+  $prefix        = undef,
   $core_src_dir  = $ganglia::params::core_src_dir
 ) inherits ganglia::params {
 
