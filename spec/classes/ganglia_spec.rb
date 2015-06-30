@@ -12,10 +12,57 @@ describe 'ganglia', :type => :class do
       describe 'with no parameters' do
         it { should contain_class('ganglia::core::install::source').with(
           'source_uri'   => nil,
-          'core_src_dir' => '/usr/src/ganglia',
+          'core_src_dir' => expects[:core_src_dir],
+          'core_version' => expects[:core_version],
           'before'       => 'Anchor[post_core_install]'
         ) }
         it { should_not contain_class('ganglia::core::install::repo') }
+        it { should contain_class('ganglia::core::build').with(
+          'core_src_dir'   => expects[:core_src_dir],
+          'with_gmetad'    => false,
+          'disable_python' => false,
+          'enable_perl'    => false,
+          'enable_status'  => false,
+          'disable_sflow'  => false,
+          'prefix'         => expects[:build_prefix],
+          'dep_packages'   => expects[:dep_packages],
+          'config_dir'     => expects[:config_dir]
+        ) }
+      end
+      describe 'when customising build from source' do
+        let :params do
+          { :provider       => 'source',
+            :core_version   => '4.0.0',
+            :source_uri     => 'https://example.org/ganglia.tar.gz',
+            :prefix         => '/opt/ganglia',
+            :core_src_dir   => '/src/ganglia2',
+            :config_dir     => '/opt/ganglia/etc',
+            :with_gmetad    => true,
+            :disable_python => true,
+            :enable_perl    => true,
+            :enable_status  => true,
+            :disable_sflow  => true,
+            :dep_packages   => ['magical','package','dependencies'],
+           }
+        end
+        it { should contain_class('ganglia::core::install::source').with(
+          'source_uri'   => 'https://example.org/ganglia.tar.gz',
+          'core_src_dir' => '/src/ganglia2',
+          'core_version' => '4.0.0',
+          'before'       => 'Anchor[post_core_install]'
+        ) }
+        it { should_not contain_class('ganglia::core::install::repo') }
+        it { should contain_class('ganglia::core::build').with(
+          'core_src_dir'   => '/src/ganglia2',
+          'with_gmetad'    => true,
+          'disable_python' => true,
+          'enable_perl'    => true,
+          'enable_status'  => true,
+          'disable_sflow'  => true,
+          'prefix'         => '/opt/ganglia',
+          'dep_packages'   => ['magical','package','dependencies'],
+          'config_dir'     => '/opt/ganglia/etc'
+        ) }
       end
       describe 'when installing from git' do
         let :params do
@@ -24,10 +71,21 @@ describe 'ganglia', :type => :class do
         it { should contain_class('ganglia::core::install::repo').with(
           'repo_uri'     => nil,
           'provider'     => 'git',
-          'core_src_dir' => '/usr/src/ganglia',
+          'core_src_dir' => expects[:core_src_dir],
           'before'       => 'Anchor[post_core_install]'
         ) }
         it { should_not contain_class('ganglia::core::install::source') }
+        it { should contain_class('ganglia::core::build').with(
+          'core_src_dir'   => expects[:core_src_dir],
+          'with_gmetad'    => false,
+          'disable_python' => false,
+          'enable_perl'    => false,
+          'enable_status'  => false,
+          'disable_sflow'  => false,
+          'prefix'         => expects[:build_prefix],
+          'dep_packages'   => expects[:dep_packages],
+          'config_dir'     => expects[:config_dir]
+        ) }
       end
       describe 'when installing from subversion' do
         let :params do
@@ -36,18 +94,29 @@ describe 'ganglia', :type => :class do
         it { should contain_class('ganglia::core::install::repo').with(
           'repo_uri'     => nil,
           'provider'     => 'svn',
-          'core_src_dir' => '/usr/src/ganglia',
+          'core_src_dir' => expects[:core_src_dir],
           'before'       => 'Anchor[post_core_install]'
         ) }
         it { should_not contain_class('ganglia::core::install::source') }
+        it { should contain_class('ganglia::core::build').with(
+          'core_src_dir'   => expects[:core_src_dir],
+          'with_gmetad'    => false,
+          'disable_python' => false,
+          'enable_perl'    => false,
+          'enable_status'  => false,
+          'disable_sflow'  => false,
+          'prefix'         => expects[:build_prefix],
+          'dep_packages'   => expects[:dep_packages],
+          'config_dir'     => expects[:config_dir]
+        ) }
       end
       describe 'when installing from packages' do
         let :params do
           { :provider => 'package' }
         end
-        it { should raise_error(Puppet::Error,
-          %r{Packages are installed by component, not via the core installer}
-        ) }
+        it { should_not contain_class('ganglia::core::install::source') }
+        it { should_not contain_class('ganglia::core::install::repo') }
+        it { should_not contain_class('ganglia::core::build') }
       end
     end
   end

@@ -11,7 +11,7 @@ describe 'ganglia::core::build', :type => :class do
       it { should contain_class('ganglia::params') }
       it { should contain_class('gcc') }
       describe 'with no parameters' do
-        it { should contain_class('rrd') }
+        it { should_not contain_class('rrd') }
         expects[:dep_packages].each do | dep_package |
           it{ should contain_package(dep_package).with_ensure('installed') }
         end
@@ -21,7 +21,7 @@ describe 'ganglia::core::build', :type => :class do
         configure_require.push('File[/usr/src/ganglia]')
         it { should contain_exec('configure_core').with(
           'cwd'     => '/usr/src/ganglia',
-          'command' => '/usr/src/ganglia/configure --with-gmetad --prefix=/usr/local --sysconfdir=/etc/ganglia',
+          'command' => '/usr/src/ganglia/configure --prefix=/usr/local --sysconfdir=/etc/ganglia',
           'creates' => '/usr/src/ganglia/config.status',
           'require' => configure_require
         ) }
@@ -35,7 +35,7 @@ describe 'ganglia::core::build', :type => :class do
       describe 'when given parameters' do
         let :params do
           { :core_src_dir   => '/src/ganglia2',
-            :with_gmetad    => false,
+            :with_gmetad    => true,
             :disable_python => true,
             :enable_perl    => true,
             :enable_status  => true,
@@ -45,10 +45,10 @@ describe 'ganglia::core::build', :type => :class do
             :config_dir     => '/opt/ganglia/config'
           }
         end
-        it { should_not contain_class('rrd') }
+        it { should contain_class('rrd') }
         it { should contain_exec('configure_core').with(
           'cwd'     => '/src/ganglia2',
-          'command' => '/src/ganglia2/configure --disable-python --enable-perl --enable-status --disable-sflow --prefix=/opt/ganglia --sysconfdir=/opt/ganglia/config',
+          'command' => '/src/ganglia2/configure --with-gmetad --disable-python --enable-perl --enable-status --disable-sflow --prefix=/opt/ganglia --sysconfdir=/opt/ganglia/config',
           'creates' => '/src/ganglia2/config.status',
           'require' => [
             'Package[magic_bag]',

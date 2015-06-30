@@ -1,7 +1,7 @@
 # Build from source
 class ganglia::core::build (
   $core_src_dir   = $ganglia::params::core_src_dir,
-  $with_gmetad    = true,
+  $with_gmetad    = false,
   $disable_python = false,
   $enable_perl    = false,
   $enable_status  = false,

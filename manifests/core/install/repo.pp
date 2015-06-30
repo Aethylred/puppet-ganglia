@@ -43,4 +43,5 @@ class ganglia::core::install::repo (
     creates => "${core_src_dir}/configure",
     require => File['ganglia_core_source_dir']
   }
+
 }

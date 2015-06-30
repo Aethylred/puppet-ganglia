@@ -30,9 +30,15 @@ end
 $supported_os = on_supported_os.map do |os, facts|
   os_expects = {}
   expects = {
+    # Revised
+    :core_src_dir       => '/usr/src/ganglia',
+    :build_prefix       => '/usr/local',
+    :package_prefix     => '/usr',
+    :config_dir         => '/etc/ganglia',
+    :core_version       => '3.7.1',
+    # Original
     :src_root           => '/src',
     :web_version        => '3.4.2',
-    :core_version       => '3.7.1',
     :pyclient_version   => '3.3.0' ,
     :metaserver_service => 'gmetad',
     :monitor_service    => 'gmond',
@@ -40,11 +46,8 @@ $supported_os = on_supported_os.map do |os, facts|
     :monitor_init       => '/etc/init.d/gmond',
     :metaserver_conf    => '/etc/ganglia/gmetad.conf',
     :monitor_conf       => '/etc/ganglia/gmond.conf',
-    :build_prefix       => '/usr/local',
-    :package_prefix     => '/usr',
     :metaserver_bin     => '/usr/sbin/gmetad',
     :monitor_bin        => '/usr/sbin/gmond',
-    :config_dir         => '/etc/ganglia',
     :core_source_file   => 'ganglia-3.7.1.tar.gz',
     :core_source_url    => 'http://downloads.sourceforge.net/project/ganglia/ganglia%20monitoring%20core/3.7.1/ganglia-3.7.1.tar.gz',
     :src_dir            => '/src/ganglia',
