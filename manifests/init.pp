@@ -4,6 +4,7 @@ class ganglia (
   $core_version   = '3.7.1',
   $source_uri     = undef,
   $repo_uri       = undef,
+  $repo_ref       = $ganglia::params::core_repo_ref,
   $prefix         = undef,
   $core_src_dir   = $ganglia::params::core_src_dir,
   $config_dir     = $ganglia::params::config_dir,
@@ -21,8 +22,8 @@ class ganglia (
     'source': {
       class{ 'ganglia::core::install::source':
         source_uri   => $source_uri,
-        core_version => $core_version,
         core_src_dir => $core_src_dir,
+        core_version => $core_version,
         before       => Anchor['post_core_install']
       }
       class{ 'ganglia::core::build':
@@ -40,6 +41,7 @@ class ganglia (
     'git','svn': {
       class{ 'ganglia::core::install::repo':
         repo_uri     => $repo_uri,
+        repo_ref     => $repo_ref,
         provider     => $provider,
         core_src_dir => $core_src_dir,
         before       => Anchor['post_core_install']

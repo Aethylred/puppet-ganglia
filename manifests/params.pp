@@ -52,11 +52,6 @@ class ganglia::params{
   #$metaserver_bin         = "${prefix}/sbin/${metaserver_service}"
   #$monitor_bin            = "${prefix}/sbin/${monitor_service}"
 
-
-# configure options
-  #$configure_opts     = "--prefix=${prefix} --sysconfdir=${config_dir}"
-
-
 # Set software versions
   $web_version        = '3.4.2'
   $core_version       = '3.7.1'
