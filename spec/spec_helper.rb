@@ -54,6 +54,9 @@ $supported_os = on_supported_os.map do |os, facts|
   case facts[:osfamily]
   when 'Debian'
     expects.merge!( {
+      # revised values
+      :gmetad_packages    => ['gmetad'],
+      # old values
       :web_package        => 'ganglia-webfrontend',
       :metaserver_package => 'gmetad',
       :monitor_package    => 'ganglia-monitor',
@@ -99,6 +102,9 @@ $supported_os = on_supported_os.map do |os, facts|
     } )
   when 'RedHat'
     expects.merge!( {
+      # revised values
+      :gmetad_packages    => ['ganglia-gmetad'],
+      # old values
       :web_package        => 'ganglia-web',
       :metaserver_package => 'ganglia-gmetad',
       :monitor_package    => 'ganglia-gmond',

@@ -2,12 +2,9 @@
 class ganglia::params{
   case $::osfamily{
     'Debian': {
-      $web_package    = 'ganglia-webfrontend'
-      $gmetad_package = 'gmetad'
-      $gmond_package  = 'ganglia-monitor'
-      $apache_user    = 'www-data'
-      $web_root       = '/var/www'
-      $dep_packages   = [
+      # revised variables
+      $gmetad_packages = ['gmetad']
+      $dep_packages    = [
         'libapr1-dev',
         'libconfuse-dev',
         'libexpat1-dev',
@@ -15,19 +12,30 @@ class ganglia::params{
         'automake',
         'libtool'
       ]
+
+      # old variables
+      $web_package    = 'ganglia-webfrontend'
+      $gmetad_package = 'gmetad'
+      $gmond_package  = 'ganglia-monitor'
+      $apache_user    = 'www-data'
+      $web_root       = '/var/www'
     }
     'RedHat': {
-      $web_package    = 'ganglia-web'
-      $gmetad_package = 'ganglia-gmetad'
-      $gmond_package  = 'ganglia-gmond'
-      $apache_user    = 'apache'
-      $web_root       = '/var/www/html'
-      $dep_packages   = [
+      # revised variables
+      $gmetad_packages = ['ganglia-gmetad']
+      $dep_packages    = [
         'apr-devel',
         'libconfuse-devel',
         'expat-devel',
         'pcre-devel'
       ]
+
+      # old variables
+      $web_package    = 'ganglia-web'
+      $gmetad_package = 'ganglia-gmetad'
+      $gmond_package  = 'ganglia-gmond'
+      $apache_user    = 'apache'
+      $web_root       = '/var/www/html'
     }
     default:{
       fail("The OS Family ${::osfamily} is not supported in the ganglia module")
