@@ -3,8 +3,10 @@ class ganglia::params{
   case $::osfamily{
     'Debian': {
       # revised variables
-      $gmetad_packages = ['gmetad']
-      $dep_packages    = [
+      $gmetad_packages  = ['gmetad']
+      $gmetad_sysconf   = '/etc/default/gmetad'
+      $gmetad_hasstatus = false
+      $dep_packages     = [
         'libapr1-dev',
         'libconfuse-dev',
         'libexpat1-dev',
@@ -22,8 +24,10 @@ class ganglia::params{
     }
     'RedHat': {
       # revised variables
-      $gmetad_packages = ['ganglia-gmetad']
-      $dep_packages    = [
+      $gmetad_packages  = ['ganglia-gmetad']
+      $gmetad_sysconf   = '/etc/sysconfig/gmetad'
+      $gmetad_hasstatus = true
+      $dep_packages     = [
         'apr-devel',
         'libconfuse-devel',
         'expat-devel',
@@ -43,11 +47,12 @@ class ganglia::params{
   }
 
   # Revised paramters
-  $core_src_dir   = '/usr/src/ganglia'
-  $core_repo_ref  = 'release/3.7'
-  $config_dir     = '/etc/ganglia'
-  $build_prefix   = '/usr/local'
-  $package_prefix = '/usr'
+  $core_src_dir       = '/usr/src/ganglia'
+  $core_repo_ref      = 'release/3.7'
+  $config_dir         = '/etc/ganglia'
+  $build_prefix       = '/usr/local'
+  $package_prefix     = '/usr'
+  $gmetad_init_script = '/etc/init.d/gmetad'
 
   # pre 1.0.0 parameters
 

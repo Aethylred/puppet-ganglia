@@ -9,6 +9,10 @@ describe 'ganglia', :type => :class do
     context "on #{os}" do
       let (:facts) { facts }
       it { should contain_class('ganglia::params') }
+      it { should contain_file('ganglia_config_dir').with(
+        'ensure' => 'directory',
+        'path'   => '/etc/ganglia'
+      ) }
       describe 'with no parameters' do
         it { should contain_class('ganglia::core::install::source').with(
           'source_uri'   => nil,
@@ -219,6 +223,15 @@ describe 'ganglia', :type => :class do
         it { should_not contain_class('ganglia::core::install::source') }
         it { should_not contain_class('ganglia::core::install::repo') }
         it { should_not contain_class('ganglia::core::build') }
+      end
+      describe 'when changing the configuration directory' do
+        let :params do
+          { :config_dir => '/opt/ganglia/etc' }
+        end
+        it { should contain_file('ganglia_config_dir').with(
+          'ensure' => 'directory',
+          'path'   => '/opt/ganglia/etc'
+        ) }
       end
     end
   end

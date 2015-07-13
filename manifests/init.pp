@@ -1,19 +1,22 @@
 # installs the ganglia core software from source or git
 class ganglia (
-  $provider       = 'source',
-  $core_version   = '3.7.1',
-  $source_uri     = undef,
-  $repo_uri       = undef,
-  $repo_ref       = $ganglia::params::core_repo_ref,
-  $prefix         = undef,
-  $core_src_dir   = $ganglia::params::core_src_dir,
-  $config_dir     = $ganglia::params::config_dir,
-  $with_gmetad    = false,
-  $disable_python = false,
-  $enable_perl    = false,
-  $enable_status  = false,
-  $disable_sflow  = false,
-  $dep_packages   = $ganglia::params::dep_packages,
+  $provider          = 'source',
+  $core_version      = '3.7.1',
+  $source_uri        = undef,
+  $repo_uri          = undef,
+  $repo_ref          = $ganglia::params::core_repo_ref,
+  $prefix            = undef,
+  $core_src_dir      = $ganglia::params::core_src_dir,
+  $config_dir        = $ganglia::params::config_dir,
+  $with_gmetad       = false,
+  $disable_python    = false,
+  $enable_perl       = false,
+  $enable_status     = false,
+  $disable_sflow     = false,
+  $dep_packages      = $ganglia::params::dep_packages,
+  $rrdcached_address = undef,
+  $gmetad_ensure     = 'stopped',
+  $gmetad_packages   = $ganglia::params::gmetad_packages
 ) inherits ganglia::params {
 
   validate_re($provider,['package','source','git','svn'])
@@ -60,6 +63,9 @@ class ganglia (
     }
     'package':{
       # Packages are installed by component, not via the base class
+      if $config_dir != $ganglia::params::config_dir {
+        fail('changing the config_dir is not recommended with the package provider')
+      }
     }
     default:{
       fail('Unsupported provider, this should not happen')
@@ -70,5 +76,19 @@ class ganglia (
   # class{ 'ganglia::core::install':
   #   require => Anchor['post_core_install']
   # }
+
+  file{'ganglia_config_dir':
+    ensure => 'directory',
+    path   => $config_dir
+  }
+
+  class {'ganglia::gmetad':
+    ensure            => $gmetad_ensure,
+    provider          => $provider,
+    packages          => $gmetad_packages,
+    config_dir        => $config_dir,
+    prefix            => $prefix,
+    rrdcached_address => $rrdcached_address,
+  }
 
 }
