@@ -9,10 +9,6 @@ describe 'ganglia', :type => :class do
     context "on #{os}" do
       let (:facts) { facts }
       it { should contain_class('ganglia::params') }
-      it { should contain_file('ganglia_config_dir').with(
-        'ensure' => 'directory',
-        'path'   => '/etc/ganglia'
-      ) }
       describe 'with no parameters' do
         it { should contain_class('ganglia::core::install::source').with(
           'source_uri'   => nil,
@@ -31,6 +27,18 @@ describe 'ganglia', :type => :class do
           'prefix'         => expects[:build_prefix],
           'dep_packages'   => expects[:dep_packages],
           'config_dir'     => expects[:config_dir]
+        ) }
+        it { should contain_file('ganglia_config_dir').with(
+          'ensure' => 'directory',
+          'path'   => '/etc/ganglia'
+        ) }
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'stopped',
+          'provider'          => 'source',
+          'packages'          => expects[:gmetad_packages],
+          'config_dir'        => '/etc/ganglia',
+          'prefix'            => nil,
+          'rrdcached_address' => nil
         ) }
       end
       describe 'when customising build from source' do
@@ -67,6 +75,14 @@ describe 'ganglia', :type => :class do
           'dep_packages'   => ['magical','package','dependencies'],
           'config_dir'     => '/opt/ganglia/etc'
         ) }
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'stopped',
+          'provider'          => 'source',
+          'packages'          => expects[:gmetad_packages],
+          'config_dir'        => '/opt/ganglia/etc',
+          'prefix'            => '/opt/ganglia',
+          'rrdcached_address' => nil
+        ) }
       end
       describe 'when installing from git' do
         let :params do
@@ -90,6 +106,14 @@ describe 'ganglia', :type => :class do
           'prefix'         => expects[:build_prefix],
           'dep_packages'   => expects[:dep_packages],
           'config_dir'     => expects[:config_dir]
+        ) }
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'stopped',
+          'provider'          => 'git',
+          'packages'          => expects[:gmetad_packages],
+          'config_dir'        => '/etc/ganglia',
+          'prefix'            => nil,
+          'rrdcached_address' => nil
         ) }
       end
       describe 'when customising build from git' do
@@ -127,8 +151,16 @@ describe 'ganglia', :type => :class do
           'dep_packages'   => ['magical','package','dependencies'],
           'config_dir'     => '/opt/ganglia/etc'
         ) }
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'stopped',
+          'provider'          => 'git',
+          'packages'          => expects[:gmetad_packages],
+          'config_dir'        => '/opt/ganglia/etc',
+          'prefix'            => '/opt/ganglia',
+          'rrdcached_address' => nil
+        ) }
       end
-      describe 'when installing from subversion' do
+      describe 'when customising install from subversion' do
         let :params do
           { :provider       => 'svn',
             :core_version   => '4.0.0',
@@ -163,8 +195,16 @@ describe 'ganglia', :type => :class do
           'dep_packages'   => ['magical','package','dependencies'],
           'config_dir'     => '/opt/ganglia/etc'
         ) }
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'stopped',
+          'provider'          => 'svn',
+          'packages'          => expects[:gmetad_packages],
+          'config_dir'        => '/opt/ganglia/etc',
+          'prefix'            => '/opt/ganglia',
+          'rrdcached_address' => nil
+        ) }
       end
-      describe 'when when installing from subversion' do
+      describe 'when installing from subversion' do
         let :params do
           { :provider => 'svn' }
         end
@@ -187,8 +227,16 @@ describe 'ganglia', :type => :class do
           'dep_packages'   => expects[:dep_packages],
           'config_dir'     => expects[:config_dir]
         ) }
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'stopped',
+          'provider'          => 'svn',
+          'packages'          => expects[:gmetad_packages],
+          'config_dir'        => '/etc/ganglia',
+          'prefix'            => nil,
+          'rrdcached_address' => nil
+        ) }
       end
-      describe 'when when specifying a repository reference with subversion' do
+      describe 'when specifying a repository reference with subversion' do
         let :params do
           { :provider => 'svn',
             :repo_ref => 'test'
@@ -202,7 +250,7 @@ describe 'ganglia', :type => :class do
           'before'       => 'Anchor[post_core_install]'
         ) }
       end
-      describe 'when when specifying a repository reference with git' do
+      describe 'when specifying a repository reference with git' do
         let :params do
           { :provider => 'git',
             :repo_ref => 'test'
@@ -231,6 +279,22 @@ describe 'ganglia', :type => :class do
         it { should contain_file('ganglia_config_dir').with(
           'ensure' => 'directory',
           'path'   => '/opt/ganglia/etc'
+        ) }
+      end
+      describe 'when customising gmetad install' do
+        let :params do
+          { :gmetad_ensure     => 'running',
+            :rrdcached_address => 'unix:/opt/rrdcached/rrdcached.sock',
+            :gmetad_packages   => ['magic','pixie','dust']
+          }
+        end
+        it { should contain_class('ganglia::gmetad').with(
+          'ensure'            => 'running',
+          'provider'          => 'source',
+          'packages'          => ['magic','pixie','dust'],
+          'config_dir'        => '/etc/ganglia',
+          'prefix'            => nil,
+          'rrdcached_address' => 'unix:/opt/rrdcached/rrdcached.sock'
         ) }
       end
     end
