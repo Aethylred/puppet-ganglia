@@ -1,3 +1,5 @@
+# This file is managed by Puppet, changes may be overwritten.
+#
 # This is an example of a Ganglia Meta Daemon configuration file
 #                http://ganglia.sourceforge.net/
 #
@@ -54,13 +56,21 @@ data_source "my cluster" localhost
 # we are the "authority" on data source feeds. This approach does not scale to
 # large groups of clusters, but is provided for backwards compatibility.
 # default: on
-# scalable off
+# scaleable on
+<%- if @scalable -%>
+scalable on
+<%- else -%>
+scalable off
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # The name of this Grid. All the data sources above will be wrapped in a GRID
 # tag with this name.
 # default: unspecified
 # gridname "MyGrid"
+<%- if @gridname -%>
+gridname "<%= @gridname %>"
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # The authority URL for this grid. Used by other gmetads to locate graphs
@@ -69,49 +79,78 @@ data_source "my cluster" localhost
 # default: "http://hostname/ganglia/",
 #   where hostname is the name of this machine, as defined by gethostname().
 # authority "http://mycluster.org/newprefix/"
+<%- if @authority -%>
+authority "<%= @authority %>"
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # List of machines this gmetad will share XML with. Localhost
 # is always trusted. 
 # default: There is no default value
 # trusted_hosts 127.0.0.1 169.229.50.165 my.gmetad.org
+<%- if @trusted_hosts and ! @trusted_hosts.empty? -%>
+trusted_hosts <%= [@trusted_hosts].flatten.compact.join(" ") %>
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # If you want any host which connects to the gmetad XML to receive
 # data, then set this value to "on"
 # default: off
 # all_trusted on
+<%- if @all_trusted -%>
+all_trusted on
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # If you don't want gmetad to setuid then set this to off
 # default: on
 # setuid off
+<%- if @setuid -%>
+setuid on
+<%- else -%>
+setuid off
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # User gmetad will setuid to (defaults to "nobody")
 # default: "nobody"
 # setuid_username "nobody"
+<%- if @setuid_username -%>
+setuid_username "<%= @setuid_username %>"
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # The port gmetad will answer requests for XML
 # default: 8651
 # xml_port 8651
+<%- if @xml_port -%>
+xml_port <%= @xml_port %>
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # The port gmetad will answer queries for XML. This facility allows
 # simple subtree and summation views of the XML tree.
 # default: 8652
 # interactive_port 8652
+<%- if @interactive_port -%>
+interactive_port <%= @interactive_port %>
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # The number of threads answering XML requests
 # default: 4
 # server_threads 10
+<%- if @server_threads -%>
+server threads <%= @server_threads %>
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # Where gmetad stores its round-robin databases
 # default: "@varstatedir@/ganglia/rrds"
 # rrd_rootdir "/some/other/place"
+<%- if @rrd_rootdir -%>
+rrd_rootdir "<%= @rrd_rootdir %>"
+<%- end -%>
 #
 #-------------------------------------------------------------------------------
 # In earlier versions of gmetad, hostnames were handled in a case
@@ -121,4 +160,8 @@ data_source "my cluster" localhost
 # From version 3.2, backwards compatibility will be disabled by default.
 # default: 1   (for gmetad < 3.2)
 # default: 0   (for gmetad >= 3.2)
+<%- if @case_sensitive -%>
 case_sensitive_hostnames 1
+<%- else -%>
+case_sensitive_hostnames 0
+<%- end -%>

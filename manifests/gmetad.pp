@@ -5,9 +5,35 @@ class ganglia::gmetad (
   $packages          = $ganglia::params::gmetad_packages,
   $config_dir        = $ganglia::params::config_dir,
   $prefix            = undef,
-  $rrdcached_address = undef
+  $rrdcached_address = undef,
+  $scalable          = false,
+  $gridname          = undef,
+  $authority         = undef,
+  $trusted_hosts     = undef,
+  $all_trusted       = false,
+  $setuid            = true,
+  $setuid_username   = undef,
+  $xml_port          = undef,
+  $interactive_port  = undef,
+  $server_threads    = undef,
+  $rrd_rootdir       = undef,
+  $case_sensitive    = false
 ) inherits ganglia::params {
 
+  validate_bool($scalable, $all_trusted, $setuid, $case_sensitive)
+  validate_string($gridname, $authority, $setuid_username)
+  if $xml_port {
+    validate_integer($xml_port)
+  }
+  if $interactive_port {
+    validate_integer($interactive_port)
+  }
+  if $server_threads {
+    validate_integer($server_threads)
+  }
+  if $rrd_rootdir {
+    validate_absolute_path($rrd_rootdir)
+  }
   validate_re($ensure, ['running','present','stopped','absent'])
   validate_re($provider,['package','source','git','svn'])
 
