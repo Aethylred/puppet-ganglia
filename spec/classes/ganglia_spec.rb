@@ -38,7 +38,19 @@ describe 'ganglia', :type => :class do
           'packages'          => expects[:gmetad_packages],
           'config_dir'        => '/etc/ganglia',
           'prefix'            => nil,
-          'rrdcached_address' => nil
+          'rrdcached_address' => nil,
+          'scalable'          => false,
+          'gridname'          => nil,
+          'authority'         => nil,
+          'trusted_hosts'     => nil,
+          'all_trusted'       => false,
+          'setuid'            => true,
+          'setuid_username'   => nil,
+          'xml_port'          => nil,
+          'interactive_port'  => nil,
+          'server_threads'    => nil,
+          'rrd_rootdir'       => nil,
+          'case_sensitive'    => false
         ) }
       end
       describe 'when customising build from source' do
@@ -283,9 +295,21 @@ describe 'ganglia', :type => :class do
       end
       describe 'when customising gmetad install' do
         let :params do
-          { :gmetad_ensure     => 'running',
-            :rrdcached_address => 'unix:/opt/rrdcached/rrdcached.sock',
-            :gmetad_packages   => ['magic','pixie','dust']
+          { :gmetad_ensure           => 'running',
+            :rrdcached_address       => 'unix:/opt/rrdcached/rrdcached.sock',
+            :gmetad_packages         => ['magic','pixie','dust'],
+            :gmetad_scalable         => true,
+            :gmetad_gridname         => 'A Grid',
+            :gmetad_authority        => 'https://some.ganglia.org/auth',
+            :gmetad_trusted_hosts    => ['192.168.1.1','this.host','that.host'],
+            :gmetad_all_trusted      => true,
+            :gmetad_setuid           => false,
+            :gmetad_setuid_username  => 'somebody',
+            :gmetad_xml_port         => '8888',
+            :gmetad_interactive_port => '9999',
+            :gmetad_server_threads   => '12',
+            :gmetad_rrd_rootdir      => '/path/to/rrd',
+            :gmetad_case_sensitive   => false
           }
         end
         it { should contain_class('ganglia::gmetad').with(
@@ -294,7 +318,19 @@ describe 'ganglia', :type => :class do
           'packages'          => ['magic','pixie','dust'],
           'config_dir'        => '/etc/ganglia',
           'prefix'            => nil,
-          'rrdcached_address' => 'unix:/opt/rrdcached/rrdcached.sock'
+          'rrdcached_address' => 'unix:/opt/rrdcached/rrdcached.sock',
+          'scalable'          => true,
+          'gridname'          => 'A Grid',
+          'authority'         => 'https://some.ganglia.org/auth',
+          'trusted_hosts'     => ['192.168.1.1','this.host','that.host'],
+          'all_trusted'       => true,
+          'setuid'            => false,
+          'setuid_username'   => 'somebody',
+          'xml_port'          => '8888',
+          'interactive_port'  => '9999',
+          'server_threads'    => '12',
+          'rrd_rootdir'       => '/path/to/rrd',
+          'case_sensitive'    => false
         ) }
       end
     end
