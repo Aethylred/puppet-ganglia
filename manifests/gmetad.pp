@@ -95,7 +95,7 @@ class ganglia::gmetad (
 
   file{'gmetad_init_script':
     ensure  => $file_ensure,
-    path    => $ganglia::params::init_script,
+    path    => $ganglia::params::gmetad_init_script,
     content => template("ganglia/gmetad.init.${::osfamily}.erb"),
     require => File['gmetad_sysconf_file','gmetad_config_file']
   }

@@ -14,6 +14,56 @@ describe 'ganglia::gmetad', :type => :class do
           it { should contain_package(package).with_ensure('present') }
         end
         it { should_not contain_class('ganglia::core::build') }
+        it { should contain_file('gmetad_config_file').with(
+          'ensure'  => 'file',
+          'path'    => '/etc/ganglia/gmetad.conf'
+        ) }
+        it { should contain_file('gmetad_sysconf_file').with(
+          'ensure'  => 'file',
+          'path'    => expects[:gmetad_sysconf]
+        ) }
+        it { should contain_file('gmetad_init_script').with(
+          'ensure'  => 'file',
+          'path'    => '/etc/init.d/gmetad',
+          'require' => ['File[gmetad_sysconf_file]','File[gmetad_config_file]']
+        ) }
+        it { should contain_service('gmetad').with(
+          'ensure'     => 'running',
+          'enable'     => true,
+          'hasrestart' => true,
+          'hasstatus'  => expects[:gmetad_hasstatus],
+          'require'    => 'File[gmetad_init_script]'
+        ) }
+        # sysconfig/default content
+        it { should contain_file('gmetad_sysconf_file').without_content(
+          %r{^RRDCACHED_ADDRESS=}
+        ) }
+        # init.d script content
+        it { should contain_file('gmetad_init_script').with_content(
+          %r{#{expects[:gmetad_initd_pkg]}}
+        ) }
+      end
+      describe 'with no parameters' do
+        let :params do
+          { :ensure => 'stopped' }
+        end
+        expects[:gmetad_packages].each do |package|
+          it { should contain_package(package).with_ensure('absent') }
+        end
+        it { should_not contain_class('ganglia::core::build') }
+        it { should contain_file('gmetad_config_file').with(
+          'ensure'  => 'absent'
+        ) }
+        it { should contain_file('gmetad_sysconf_file').with(
+          'ensure'  => 'absent'
+        ) }
+        it { should contain_file('gmetad_init_script').with(
+          'ensure'  => 'absent'
+        ) }
+        it { should contain_service('gmetad').with(
+          'ensure'     => 'stopped',
+          'enable'     => false
+        ) }
       end
       describe 'when when installing from packages' do
         let :params do

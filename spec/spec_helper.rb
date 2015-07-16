@@ -56,6 +56,10 @@ $supported_os = on_supported_os.map do |os, facts|
     expects.merge!( {
       # revised values
       :gmetad_packages    => ['gmetad'],
+      :gmetad_sysconf     => '/etc/default/gmetad',
+      :gmetad_hasstatus   => false,
+      :gmetad_initd_pkg   => '^DAEMON=/usr/sbin/gmetad$',
+      :gmetad_initd_bld   => '^DAEMON=/usr/local/sbin/gmetad$',
       # old values
       :web_package        => 'ganglia-webfrontend',
       :metaserver_package => 'gmetad',
@@ -104,6 +108,10 @@ $supported_os = on_supported_os.map do |os, facts|
     expects.merge!( {
       # revised values
       :gmetad_packages    => ['ganglia-gmetad'],
+      :gmetad_sysconf     => '/etc/sysconfig/gmetad',
+      :gmetad_hasstatus   => true,
+      :gmetad_initd_pkg   => '^GMETAD=/usr/sbin/gmetad$',
+      :gmetad_initd_bld   => '^GMETAD=/usr/local/sbin/gmetad$',
       # old values
       :web_package        => 'ganglia-web',
       :metaserver_package => 'ganglia-gmetad',
