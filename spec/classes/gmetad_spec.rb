@@ -36,14 +36,51 @@ describe 'ganglia::gmetad', :type => :class do
         ) }
         # sysconfig/default content
         it { should contain_file('gmetad_sysconf_file').without_content(
-          %r{^RRDCACHED_ADDRESS=}
+          %r{^RRDCACHED_ADDRESS=.*$}
         ) }
         # init.d script content
         it { should contain_file('gmetad_init_script').with_content(
           %r{#{expects[:gmetad_initd_pkg]}}
         ) }
+        # Check config file content
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^scalable off$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^gridname .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^authority .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^trusted_hosts .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^all_trusted on$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^setuid on$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^setuid_username .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^xml_port .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^interactive_port .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^server threads .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').without_content(
+          %r{^rrd_rootdir .*$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^case_sensitive_hostnames 0$}
+        ) }
       end
-      describe 'with no parameters' do
+      describe 'when gmetad is stopped' do
         let :params do
           { :ensure => 'stopped' }
         end
@@ -74,23 +111,134 @@ describe 'ganglia::gmetad', :type => :class do
           it { should contain_package(package).with_ensure('present') }
         end
       end
+      describe 'when when installing from custom packages' do
+        let :params do
+          { :provider => 'package',
+            :packages => ['magic','pixie','dust']
+          }
+        end
+        it { should_not contain_class('ganglia::core::build') }
+        it { should contain_package('magic').with_ensure('present') }
+        it { should contain_package('pixie').with_ensure('present') }
+        it { should contain_package('dust').with_ensure('present') }
+      end
+      describe 'when customising install locations' do
+        let :params do
+          { :config_dir => '/opt/ganglia/etc',
+            :prefix     => '/opt/ganglia'
+          }
+        end
+
+        it { should contain_file('gmetad_config_file').with(
+          'ensure'  => 'file',
+          'path'    => '/opt/ganglia/etc/gmetad.conf'
+        ) }
+        case facts[:osfamily]
+        when 'Debian'
+          it { should contain_file('gmetad_init_script').with_content(
+            %r{^DAEMON=/opt/ganglia/sbin/gmetad$}
+          ) }
+        when 'RedHat'
+          it { should contain_file('gmetad_init_script').with_content(
+            %r{^GMETAD=/opt/ganglia/sbin/gmetad$}
+          ) }
+        end
+      end
       describe 'when when installing from subversion' do
         let :params do
           { :provider => 'svn' }
         end
         it { should contain_class('ganglia::core::build') }
+        it { should contain_file('gmetad_init_script').with_content(
+          %r{#{expects[:gmetad_initd_bld]}}
+        ) }
       end
       describe 'when when installing from git' do
         let :params do
           { :provider => 'git' }
         end
         it { should contain_class('ganglia::core::build') }
+        it { should contain_file('gmetad_init_script').with_content(
+          %r{#{expects[:gmetad_initd_bld]}}
+        ) }
       end
       describe 'when when installing from source' do
         let :params do
           { :provider => 'source' }
         end
         it { should contain_class('ganglia::core::build') }
+        it { should contain_file('gmetad_init_script').with_content(
+          %r{#{expects[:gmetad_initd_bld]}}
+        ) }
+      end
+      describe 'when setting RRD cache address' do
+        let :params do
+          { :rrdcached_address => 'unix:/var/run/rrdcached/rrdcached.sock' }
+        end
+        it { should contain_file('gmetad_sysconf_file').with_content(
+          %r{^RRDCACHED_ADDRESS=unix:/var/run/rrdcached/rrdcached.sock}
+        ) }
+      end
+      describe 'when setting RRD cache address' do
+        let :params do
+          { :rrdcached_address => 'unix:/var/run/rrdcached/rrdcached.sock' }
+        end
+        it { should contain_file('gmetad_sysconf_file').with_content(
+          %r{^RRDCACHED_ADDRESS=unix:/var/run/rrdcached/rrdcached.sock}
+        ) }
+      end
+      describe 'when customising the configuration' do
+        let :params do
+          { :scalable          => true,
+            :gridname          => 'This Grid',
+            :authority         => 'https://some.ganglia.example.org/ganglia',
+            :trusted_hosts     => ['this.host','that.host','10.0.0.1'],
+            :all_trusted       => true,
+            :setuid            => false,
+            :setuid_username   => 'somebody',
+            :xml_port          => '2020',
+            :interactive_port  => '4040',
+            :server_threads    => '28',
+            :rrd_rootdir       => '/path/to/rrd',
+            :case_sensitive    => true
+          }
+        end
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^scalable on$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^gridname "This Grid"$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^authority "https://some.ganglia.example.org/ganglia"$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^trusted_hosts this.host that.host 10.0.0.1$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^all_trusted on$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^setuid off$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^setuid_username "somebody"$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^xml_port 2020$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^interactive_port 4040$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^server threads 28$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^rrd_rootdir "/path/to/rrd"$}
+        ) }
+        it { should contain_file('gmetad_config_file').with_content(
+          %r{^case_sensitive_hostnames 1$}
+        ) }
       end
     end
   end
