@@ -4,6 +4,7 @@ class ganglia::params{
     'Debian': {
       # revised variables
       $gmetad_packages  = ['gmetad']
+      $gmond_packages   = ['ganglia-monitor']
       $gmetad_sysconf   = '/etc/default/gmetad'
       $gmetad_hasstatus = false
       $dep_packages     = [
@@ -25,6 +26,7 @@ class ganglia::params{
     'RedHat': {
       # revised variables
       $gmetad_packages  = ['ganglia-gmetad']
+      $gmond_packages   = ['ganglia-gmond']
       $gmetad_sysconf   = '/etc/sysconfig/gmetad'
       $gmetad_hasstatus = true
       $dep_packages     = [
