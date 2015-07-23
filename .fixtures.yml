@@ -9,6 +9,9 @@ fixtures:
     vcsrepo:
       repo: 'puppetlabs-vcsrepo'
       ref:  '1.3.0'
+    concat:
+      repo: 'puppetlabs-concat'
+      ref:  '1.2.3'
     gcc:
       repo: 'puppetlabs-gcc'
       ref:  '0.3.0'

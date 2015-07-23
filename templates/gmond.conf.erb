@@ -3,47 +3,51 @@
    The values closely match ./gmond/metric.h definitions in 2.5.x */ 
 globals {                    
 <%- if @daemonize -%>
-  daemonize = yes
+  daemonize         = yes
 <%- else -%>
-  daemonize = no
+  daemonize         = no
 <%- end -%>
 <%- if @setuid -%>
-  setuid = yes
+  setuid            = yes
 <%- else -%>
-  setuid = no
+  setuid            = no
 <%- end -%>
-  user = <%= @user %>
-  debug_level = <%= @debug_level %>
-  max_udp_msg_len = <%= @max_udp_msg_len %>
+  user              = <%= @user %>
+  debug_level       = <%= @debug_level %>
+  max_udp_msg_len   = <%= @max_udp_msg_len %>
 <%- if @mute -%>
-  mute = yes
+  mute              = yes
 <%- else -%>
-  mute = no
+  mute              = no
 <%- end -%>
-<%- if @deaf -%>
-  deaf = yes
+<%- if @deaf or ! @reciever -%>
+  deaf              = yes
 <%- else -%>
-  deaf = no
+  deaf              = no
 <%- end -%>
-  host_dmax = <%= @host_dmax %> /* seconds */
+  host_dmax         = <%= @host_dmax %> /* seconds */
   cleanup_threshold = <%= @cleanup_threshold %> /* seconds */
 <%- if @gexec -%>
-  gexec = yes
+  gexec             = yes
 <%- else -%>
-  gexec = no
+  gexec             = no
 <%- end -%>
   send_metadata_interval = <%= @send_metadata_interval %> /* seconds */
 } 
 
 /* If a cluster attribute is specified, then all gmond hosts are wrapped inside 
  * of a <CLUSTER> tag.  If you do not specify a cluster tag, then all <HOSTS> will 
- * NOT be wrapped inside of a <CLUSTER> tag. */ 
+ * NOT be wrapped inside of a <CLUSTER> tag. */
+<%- if @cluster -%>
+<%= @cluster_fragment %>
+<%- else -%>
 cluster { 
-  name = "unspecified" 
-  owner = "unspecified" 
-  latlong = "unspecified" 
-  url = "unspecified" 
-} 
+  name    = "unspecified"
+  owner   = "unspecified"
+  latlong = "unspecified"
+  url     = "unspecified"
+}
+<%- end -%>
 
 /* The host section describes attributes of the host, like the location */ 
 host { 
@@ -51,25 +55,27 @@ host {
 } 
 
 /* Feel free to specify as many udp_send_channels as you like.  Gmond 
-   used to only support having a single channel */ 
-udp_send_channel { 
-  mcast_join = 239.2.11.71 
-  port = 8649 
-  ttl = 1 
-} 
+   used to only support having a single channel */
+/* The ganglia puppet module currently only supports a single channel defined
+   as part of a cluster */
+<%- if @cluster and ! @mute -%>
+<%= @udp_send_channel_fragment %>
+<%- end -%>
 
 /* You can specify as many udp_recv_channels as you like as well. */ 
-udp_recv_channel { 
-  mcast_join = 239.2.11.71 
-  port = 8649 
-  bind = 239.2.11.71 
-} 
+/* The ganglia puppet module currently only supports a single channel defined
+   as part of a cluster */
+<%- if @cluster and (! @deaf or @reciever) -%>
+<%= @udp_recv_channel_fragment %>
+<%- end -%>
 
 /* You can specify as many tcp_accept_channels as you like to share 
    an xml description of the state of the cluster */ 
-tcp_accept_channel { 
-  port = 8649 
-} 
+/* The ganglia puppet module currently only supports a single channel defined
+   as part of a cluster */
+<%- if @cluster and (! @deaf or @reciever) -%>
+<%= @tcp_accept_channel_fragment %>
+<%- end -%>
 
 /* Each metrics module that is referenced by gmond must be specified and 
    loaded. If the module has been statically linked with gmond, it does not 

@@ -12,10 +12,12 @@ class ganglia::gmond (
   $max_udp_msg_len        = '1472',
   $mute                   = false,
   $deaf                   = false,
+  $reciever               = true,
   $host_dmax              = '0',
   $cleanup_threshold      = '300',
   $gexec                  = false,
-  $send_metadata_interval = '0'
+  $send_metadata_interval = '0',
+  $cluster                = undef
 ) inherits ganglia::params {
 
   validate_re($ensure, ['running','present','stopped','absent'])
@@ -65,6 +67,12 @@ class ganglia::gmond (
       # the validate_re means we can assume gmetad has been preinstalled
       require ganglia::core::build
     }
+  }
+
+  if $cluster {
+    $cluster_fragment = getparam(Ganlia::Cluster[$cluster], 'cluster_fragment')
+    $udp_send_channel_fragment = getparam(Ganglia::Cluster[$cluster], 'udp_send_channel_fragment')
+    $udp_recv_channel_fragment = getparam(Ganglia::Cluster[$cluster], 'udp_recv_channel_fragment')
   }
 
   file{'gmond_config_file':
