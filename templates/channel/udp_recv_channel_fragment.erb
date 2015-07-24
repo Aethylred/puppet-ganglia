@@ -1,0 +1,9 @@
+udp_recv_channel {
+<%- if @mcast_join -%>
+  mcast_join = <%= @mcast_join %>
+<%- end -%>
+<%- if @bind -%>
+  bind       = <%= @bind %>
+<%- end -%>
+  port       = <%= @port %>
+}

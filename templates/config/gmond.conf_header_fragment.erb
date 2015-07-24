@@ -1,0 +1,36 @@
+/* This file is managed by Puppet, changes may be overwritten */
+/* This configuration is as close to 2.5.x default behavior as possible 
+   The values closely match ./gmond/metric.h definitions in 2.5.x */ 
+globals {                    
+<%- if @daemonize -%>
+  daemonize         = yes
+<%- else -%>
+  daemonize         = no
+<%- end -%>
+<%- if @setuid -%>
+  setuid            = yes
+<%- else -%>
+  setuid            = no
+<%- end -%>
+  user              = <%= @user %>
+  debug_level       = <%= @debug_level %>
+  max_udp_msg_len   = <%= @max_udp_msg_len %>
+<%- if @mute -%>
+  mute              = yes
+<%- else -%>
+  mute              = no
+<%- end -%>
+<%- if @deaf or ! @reciever -%>
+  deaf              = yes
+<%- else -%>
+  deaf              = no
+<%- end -%>
+  host_dmax         = <%= @host_dmax %> /* seconds */
+  cleanup_threshold = <%= @cleanup_threshold %> /* seconds */
+<%- if @gexec -%>
+  gexec             = yes
+<%- else -%>
+  gexec             = no
+<%- end -%>
+  send_metadata_interval = <%= @send_metadata_interval %> /* seconds */
+}

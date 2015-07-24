@@ -17,6 +17,7 @@ class ganglia::gmond (
   $cleanup_threshold      = '300',
   $gexec                  = false,
   $send_metadata_interval = '0',
+  $location               = 'unspecified',
   $cluster                = undef
 ) inherits ganglia::params {
 
@@ -34,6 +35,7 @@ class ganglia::gmond (
       $directory_ensure = 'directory'
       $service_ensure   = 'running'
       $service_enable   = true
+      $concat_ensure    = 'present'
     }
     default: {
       $package_ensure   = 'absent'
@@ -41,6 +43,7 @@ class ganglia::gmond (
       $directory_ensure = 'absent'
       $service_ensure   = 'stopped'
       $service_enable   = false
+      $concat_ensure    = 'absent'
     }
   }
 
@@ -69,16 +72,75 @@ class ganglia::gmond (
     }
   }
 
-  if $cluster {
-    $cluster_fragment = getparam(Ganlia::Cluster[$cluster], 'cluster_fragment')
-    $udp_send_channel_fragment = getparam(Ganglia::Cluster[$cluster], 'udp_send_channel_fragment')
-    $udp_recv_channel_fragment = getparam(Ganglia::Cluster[$cluster], 'udp_recv_channel_fragment')
+  concat{$config_file:
+    ensure => $concat_ensure
   }
 
-  file{'gmond_config_file':
-    ensure  => $file_ensure,
-    path    => $config_file,
-    content => template('ganglia/gmond.conf.erb')
+  concat::fragment{'gmond.conf_header':
+    target  => $config_file,
+    content => template('ganglia/config/gmond.conf_header_fragment.erb'),
+    order   => 'A000'
+  }
+
+  if $cluster {
+    Concat::Fragment <<| tag == "${cluster}_ganglia_cluster" |>> {
+      target => $config_file,
+      order  => 'B000'
+    }
+    if ! $mute {
+      Concat::Fragment <<| tag == "${cluster}_ganglia_cluster_ganglia_udp_send" |>> {
+        target => $config_file,
+        order  => 'D500'
+      }
+    }
+    if ! $deaf or $reciever {
+      Concat::Fragment <<| tag == "${cluster}_ganglia_cluster_ganglia_udp_recv" |>> {
+        target => $config_file,
+        order  => 'E500'
+      }
+      Concat::Fragment <<| tag == "${cluster}_ganglia_cluster_ganglia_tcp_accept" |>> {
+        target => $config_file,
+        order  => 'F500'
+      }
+    }
+  } else {
+    concat::fragment{'unspecified_ganglia_cluster':
+      target  => $config_file,
+      content => template('ganglia/cluster/unspecified_cluster.erb'),
+      order   => 'B000'
+    }
+  }
+
+  concat::fragment{'gmond.conf_location':
+    target  => $config_file,
+    content => template('ganglia/config/gmond.conf_location_fragment.erb'),
+    order   => 'C000'
+  }
+
+  concat::fragment{'gmond.conf_udp_send_channel_header':
+    target  => $config_file,
+    content => template('ganglia/config/gmond.conf_udp_send_channel_header_fragment.erb'),
+    order   => 'D000'
+  }
+
+  concat::fragment{'gmond.conf_udp_recv_channel_header':
+    target  => $config_file,
+    content => template('ganglia/config/gmond.conf_udp_recv_channel_header_fragment.erb'),
+    order   => 'E000'
+  }
+
+  concat::fragment{'gmond.conf_tcp_accept_channel_header':
+    target  => $config_file,
+    content => template('ganglia/config/gmond.conf_tcp_accept_channel_header_fragment.erb'),
+    order   => 'F000'
+  }
+
+  # This fragment currently holds all the parts of the configuration that is
+  # not yet automated
+  concat::fragment{'gmond.conf_footer':
+    target  => $config_file,
+    content => template('ganglia/config/gmond.conf_footer_fragment.erb'),
+    order   => 'C000'
   }
 
 }
