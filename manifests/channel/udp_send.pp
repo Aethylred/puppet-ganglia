@@ -6,7 +6,7 @@ define ganglia::channel::udp_send(
   $ttl        = '1'
 ) {
 
-  validate_integer($port, $ttl)
+  validate_integer([$port, $ttl])
   if $host {
     validate_string($host)
   }

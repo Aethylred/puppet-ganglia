@@ -1,7 +1,6 @@
 # Defines a Ganglia gmond cluster and creates the required stored resources
 define ganglia::cluster(
   $udp_send_host   = undef,
-  $name            = $title,
   $owner           = 'unspecified',
   $latlong         = 'unspecified',
   $url             = 'unspecified',
@@ -17,7 +16,7 @@ define ganglia::cluster(
     fail('A Ganglia cluster can not be named unspecified, this is reserved for no cluster')
   }
 
-  validate_integer($udp_recv_port, $udp_send_ttl, $udp_send_port, $tcp_accept_port)
+  validate_integer([$udp_recv_port, $udp_send_ttl, $udp_send_port, $tcp_accept_port])
 
   # This is a dummy concat file to act as a target, should never be realised
   @@concat{"/tmp/ganglia_${name}_cluster_dummy":
