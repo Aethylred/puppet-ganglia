@@ -24,7 +24,7 @@ class ganglia::gmond (
   validate_re($ensure, ['running','present','stopped','absent'])
   validate_re($provider,['package','source','git','svn'])
   validate_bool($daemonize, $setuid, $mute, $deaf, $gexec)
-  validate_integer($debug_level, $max_udp_msg_len, $host_dmax, $cleanup_threshold, $send_metadata_interval)
+  validate_integer([$debug_level, $max_udp_msg_len, $host_dmax, $cleanup_threshold, $send_metadata_interval])
 
   $config_file = "${config_dir}/gmond.conf"
 
@@ -106,7 +106,7 @@ class ganglia::gmond (
   } else {
     concat::fragment{'unspecified_ganglia_cluster':
       target  => $config_file,
-      content => template('ganglia/cluster/unspecified_cluster.erb'),
+      content => template('ganglia/cluster/unspecified_cluster_fragment.erb'),
       order   => 'B000'
     }
   }

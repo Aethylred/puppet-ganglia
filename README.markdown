@@ -10,6 +10,15 @@ This Puppet module installs, configures and manage Ganglia and it's components, 
 * [stdlib](https://github.com/puppetlabs/puppetlabs-stdlib)
 * [rrd](https://github.com/nesi/puppet-rrd) ( *optional* )
 
+# To Do
+
+Writing a to do list while I move:
+
+* Continue working on how to populate data_source entries in `gmetad.conf` from other declared resources (e.g. `ganglia::cluster` and `ganglia::gmond`)
+* Refresh Ganglia Web interface installation.
+* Tie it all back to the base class defined in `init.pp`
+* Sort out ConcurrencyKit dependencies so they only apply when Ganglia version is >=3.7.0
+
 # Attribution
 
 This module is derived from the puppet-blank module by Aaron Hicks (aethylred@gmail.com)

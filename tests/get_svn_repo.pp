@@ -8,4 +8,6 @@ class{'ganglia':
   provider => 'svn',
   require  => Class['ck']
 }
-include ganglia::core::build
+class{'ganglia::gmond':
+  provider => 'svn'
+}

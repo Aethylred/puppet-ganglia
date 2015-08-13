@@ -5,5 +5,10 @@ class {'ck':
   build    => true,
   before   => Class['ganglia']
 }
-include ganglia
-include ganglia::core::build
+class{'ganglia':
+  provider => 'source',
+  require  => Class['ck']
+}
+class{'ganglia::gmond':
+  provider => 'source'
+}
